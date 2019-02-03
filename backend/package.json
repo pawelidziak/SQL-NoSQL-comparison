@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check",
+    "start": "npm run build & node build/src/server"
+  },
+  "author": "pIdziak",
+  "license": "MIT",
+  "dependencies": {
+    "@types/express": "^4.16.1",
+    "@types/node": "^10.12.21",
+    "express": "^4.16.4",
+    "body-parser": "^1.18.3",
+    "gts": "^0.9.0",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1"
+  }
+}
