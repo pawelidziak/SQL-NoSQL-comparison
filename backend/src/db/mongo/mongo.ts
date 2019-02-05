@@ -1,5 +1,4 @@
 import {MongoClient} from 'mongodb';
-
 import {DatabaseModel} from '../DatabaseModel';
 
 export class Mongo implements DatabaseModel {
@@ -16,20 +15,17 @@ export class Mongo implements DatabaseModel {
       MongoClient.connect(this.DB_URL, {useNewUrlParser: true}, (err, db) => {
         if (err) throw err;
         this.database = db;
-        console.log('MongoDB connected.');
       });
     }
   }
 
   isConnected(): boolean {
-    if (!this.database) {
-      return false;
-    }
-    return !!this.database;
+    return this.database ? this.database.isConnected() : false;
   }
 
   disconnect(): void {
-    // @ts-ignore
-    this.database.close(true);
+    if (this.database) {
+      this.database.close(true);
+    }
   }
 }

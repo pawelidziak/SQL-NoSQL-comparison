@@ -17,8 +17,7 @@ export class ParentRepositoryImpl implements ParentRepository {
   }
 
   addOne(model: ParentModel): void {
-    // TMP_DATA.push(model);
-    throw new Error('TODO getOne error');
+    TMP_DATA.push(model);
   }
 
   updateOne(model: ParentModel): void {

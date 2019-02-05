@@ -1,13 +1,17 @@
 import {Router} from 'express';
+
+import {Mongo} from '../../db/mongo/mongo';
 import {ParentServiceImpl} from '../../infrastructure/services/ParentServiceImpl';
 import {AsyncMiddleware} from '../middlewares/AsyncMiddleware';
 
 export class MongoRoutes {
   private readonly _router: Router;
   private parentService: ParentServiceImpl;
+  private mongoDb: Mongo;
 
   constructor() {
     this.parentService = new ParentServiceImpl();
+    this.mongoDb = new Mongo();
     this._router = Router();
     this.init();
   }
@@ -17,6 +21,7 @@ export class MongoRoutes {
   }
 
   private init(): void {
+    this.connectMongo();
     this.getAll();
     this.postOne();
   }
@@ -28,6 +33,13 @@ export class MongoRoutes {
    *    AsyncMiddleware.myAsync will pass it to next() and express will
    *    handle the error;
    */
+  private connectMongo(): void {
+    this._router.get('/', AsyncMiddleware.myAsync(async (req, res, next) => {
+      await this.mongoDb.connect();
+      const isConnected = await this.mongoDb.isConnected();
+      res.json({isConnected});
+    }));
+  }
 
   /* GET all parents */
   private getAll(): void {
@@ -39,6 +51,9 @@ export class MongoRoutes {
   }
 
   /* POST one parent */
+  // nie post ONE a MANY, w argumencie przesylamy liczbe, laczymy sie z serwisem
+  // ktory generuje LICZBE rekordów, rozpoczyna pomiar, wstawia je i zwraca
+  // {czas, db, operation, liczbe}
   private postOne(): void {
     this._router.post(
         '/parents', AsyncMiddleware.myAsync(async (req, res, next) => {
