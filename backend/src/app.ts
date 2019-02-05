@@ -1,13 +1,15 @@
 import * as express from 'express';
 
 import {BodyParser} from './api/middlewares/BodyParser';
-import {HeroRouter} from './api/routes/HeroRouter';
+import {MongoRoutes} from './api/routes/MongoRoutes';
+import {Mongo} from './db/mongo/mongo';
 
 export class App {
   private app: express.Application;
 
   constructor() {
     this.app = this.getExpressApp();
+    const mongo = new Mongo();
     this.useMiddleware();
     this.routes();
   }
@@ -21,6 +23,6 @@ export class App {
   }
 
   private routes(): void {
-    this.app.use('/api/v1/heroes', new HeroRouter().router);
+    this.app.use('/api/v1/heroes', new MongoRoutes().router);
   }
 }
