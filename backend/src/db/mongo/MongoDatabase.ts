@@ -1,18 +1,25 @@
 import {Db, MongoClient} from 'mongodb';
-import {DatabaseModel} from '../DatabaseModel';
 
 /**
  *  Class with ONLY connection methods
  */
-export class MongoDatabase implements DatabaseModel {
-  private readonly DB_URL = 'mongodb://localhost:27017/mgrMongo';
-  private _database: MongoClient|null;
+export class MongoDatabase {
+  private static instance: MongoDatabase;
 
-  constructor() {
+  private readonly DB_URL = 'mongodb://localhost:27017/mgrMongo';
+  private _database: MongoClient | null;
+
+  private constructor() {
     this._database = null;
     this.connect();
   }
 
+  static getInstance() {
+    if (!MongoDatabase.instance) {
+      MongoDatabase.instance = new MongoDatabase();
+    }
+    return MongoDatabase.instance;
+  }
 
   /**
    *    DATABASE METHODS
@@ -22,20 +29,10 @@ export class MongoDatabase implements DatabaseModel {
       MongoClient.connect(this.DB_URL, {useNewUrlParser: true}, (err, db) => {
         if (err) throw err;
         this._database = db;
-        console.log('Mongo connected: ' + this.isConnected());
-        db.db().createCollection('testCol').then(
-            () => console.log('testCol created \n\n'));
+        db.db().dropDatabase();
+        db.db().createCollection('simpleData');
+        db.db().createCollection('extendData');
       });
-    }
-  }
-
-  isConnected(): boolean {
-    return this._database ? this._database.isConnected() : false;
-  }
-
-  disconnect(): void {
-    if (this._database) {
-      this._database.close(true);
     }
   }
 

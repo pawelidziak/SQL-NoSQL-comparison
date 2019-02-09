@@ -2,7 +2,6 @@ import {DataModel} from '../../core/models/DataModel';
 import {DbName, DbResult} from '../../core/models/DbResult';
 import {OperationType} from '../../core/models/OperationType';
 import {RequestModel} from '../../core/models/RequestModel';
-import {SurveyResult} from '../../core/models/SurveyResult';
 import {GenerateData} from '../../utils/GenerateData';
 import {MongoService} from './MongoService';
 
@@ -16,34 +15,60 @@ export class SurveyService {
 
   async surveyCreate(reqModel: RequestModel) {
     const objList: DataModel[] = GenerateData.getData(reqModel);
+    const result: DbResult[] = [];
 
-    /*
-        CREATE FINAL RESULT OBJECT
-     */
-    const result: SurveyResult = {
-      operation: OperationType.CREATE,
-      quantity: reqModel.quantity,
-      dbResult: []
-    };
-
-    /*
-        CREATE MONGO RESULT
-     */
-    const mongoResult: DbResult = {
+    // MongoDB
+    result.push({
       dbName: DbName.MongoDB,
       time: await this.mongoService.createMany(objList)
+    });
+
+    // MySQL
+
+    return {
+      operation: OperationType.READ,
+      quantity: reqModel.quantity,
+      dbResult: result
     };
-
-    /*
-        CREATE MONGO RESULT
-     */
-
-    /*
-        ADD DATABASES RESULTS TO FINAL RESULT
-     */
-    result.dbResult.push(mongoResult);
-
-    return result;
   }
 
+  async surveyRead(reqModel: RequestModel) {
+    const objList: DataModel[] = GenerateData.getData(reqModel);
+
+    const result: DbResult[] = [];
+
+    // MongoDB
+    result.push({
+      dbName: DbName.MongoDB,
+      time: await this.mongoService.readMany(objList)
+    });
+
+    // MySQL
+
+    return {
+      operation: OperationType.READ,
+      quantity: reqModel.quantity,
+      dbResult: result
+    };
+  }
+
+  async updateMany(reqModel: RequestModel) {
+    const objList: DataModel[] = GenerateData.getData(reqModel);
+
+    const result: DbResult[] = [];
+
+    // MongoDB
+    result.push({
+      dbName: DbName.MongoDB,
+      time: await this.mongoService.updateMany(objList)
+    });
+
+    // MySQL
+
+    return {
+      operation: OperationType.UPDATE,
+      quantity: reqModel.quantity,
+      dbResult: result
+    };
+  }
 }
