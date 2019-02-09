@@ -26,7 +26,7 @@ export class SurveyService {
     // MySQL
 
     return {
-      operation: OperationType.READ,
+      operation: OperationType.CREATE,
       quantity: reqModel.quantity,
       dbResult: result
     };
@@ -67,6 +67,26 @@ export class SurveyService {
 
     return {
       operation: OperationType.UPDATE,
+      quantity: reqModel.quantity,
+      dbResult: result
+    };
+  }
+
+  async deleteMany(reqModel: RequestModel) {
+    const objList: DataModel[] = GenerateData.getData(reqModel);
+
+    const result: DbResult[] = [];
+
+    // MongoDB
+    result.push({
+      dbName: DbName.MongoDB,
+      time: await this.mongoService.deleteMany(objList)
+    });
+
+    // MySQL
+
+    return {
+      operation: OperationType.DELETE,
       quantity: reqModel.quantity,
       dbResult: result
     };

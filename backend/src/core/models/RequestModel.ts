@@ -1,4 +1,4 @@
-import {OperationType} from "./OperationType";
+import {OperationType} from './OperationType';
 
 export interface RequestModel {
   quantity: number;

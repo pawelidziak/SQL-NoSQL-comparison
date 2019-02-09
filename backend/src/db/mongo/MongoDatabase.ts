@@ -7,7 +7,7 @@ export class MongoDatabase {
   private static instance: MongoDatabase;
 
   private readonly DB_URL = 'mongodb://localhost:27017/mgrMongo';
-  private _database: MongoClient | null;
+  private _database: MongoClient|null;
 
   private constructor() {
     this._database = null;

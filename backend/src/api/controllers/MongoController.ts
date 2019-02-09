@@ -24,41 +24,54 @@ export class MongoController {
   init() {
     // Create
     this._router.get(
-      AppRoutes.DB_ROUTES.createMany,
-      (req: Request, res: Response, next: NextFunction) => {
-        this.createMany(req, res, next);
-      });
+        AppRoutes.DB_ROUTES.createMany,
+        (req: Request, res: Response, next: NextFunction) => {
+          this.createMany(req, res, next);
+        });
 
     // Read
     this._router.get(
-      AppRoutes.DB_ROUTES.readMany,
-      (req: Request, res: Response, next: NextFunction) => {
-        this.readMany(req, res, next);
-      });
+        AppRoutes.DB_ROUTES.readMany,
+        (req: Request, res: Response, next: NextFunction) => {
+          this.readMany(req, res, next);
+        });
 
     // Update
     this._router.get(
-      AppRoutes.DB_ROUTES.updateMany,
-      (req: Request, res: Response, next: NextFunction) => {
-        this.updateMany(req, res, next);
-      });
+        AppRoutes.DB_ROUTES.updateMany,
+        (req: Request, res: Response, next: NextFunction) => {
+          this.updateMany(req, res, next);
+        });
+
+    // Delete
+    this._router.get(
+        AppRoutes.DB_ROUTES.deleteMany,
+        (req: Request, res: Response, next: NextFunction) => {
+          this.deleteMany(req, res, next);
+        });
   }
 
   private createMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.surveyCreate(req.body as RequestModel)
-      .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .then((result: SurveyResult) => res.json(result))
+        .catch((err: Error) => res.status(404).send('createMany ERROR'));
   }
 
   private readMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.surveyRead(req.body as RequestModel)
-      .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .then((result: SurveyResult) => res.json(result))
+        .catch((err: Error) => res.status(404).send('createMany ERROR'));
   }
 
   private updateMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.updateMany(req.body as RequestModel)
-      .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .then((result: SurveyResult) => res.json(result))
+        .catch((err: Error) => res.status(404).send('createMany ERROR'));
+  }
+
+  private deleteMany(req: Request, res: Response, next: NextFunction) {
+    this.surveyService.deleteMany(req.body as RequestModel)
+        .then((result: SurveyResult) => res.json(result))
+        .catch((err: Error) => res.status(404).send('createMany ERROR'));
   }
 }
