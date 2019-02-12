@@ -4,6 +4,8 @@
     "gts/tslint.json"
   ],
   "jsRules": {},
-  "rules": {},
+  "rules": {
+    "no-any": false
+  },
   "rulesDirectory": []
 }

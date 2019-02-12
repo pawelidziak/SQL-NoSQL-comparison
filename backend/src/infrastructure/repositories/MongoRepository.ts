@@ -1,6 +1,6 @@
 import {ObjectID} from 'bson';
 
-import {DataModel} from '../../core/models/DataModel';
+import {ParentI} from '../../core/models/ParentModel';
 import {MongoDatabase} from '../../db/mongo/MongoDatabase';
 
 export class MongoRepository {
@@ -10,27 +10,30 @@ export class MongoRepository {
     this.mongoDatabase = MongoDatabase.getInstance();
   }
 
-  createOne(obj: DataModel) {
-    return this.mongoDatabase.getDatabase()
-        .collection('simpleData')
-        .insertOne(obj);
+  async createOne(obj: ParentI) {
+    return await this.mongoDatabase.getDatabase()
+        .collection('parents')
+        .insertOne(Object.assign({}, obj));
   }
 
-  readOne(id: string) {
-    return this.mongoDatabase.getDatabase().collection('simpleData').findOne({
-      '_id': new ObjectID(id)
-    });
+  async readOne(id: string) {
+    return await this.mongoDatabase.getDatabase().collection('parents').findOne(
+        {'_id': new ObjectID(id)});
   }
 
-  updateOne(id: string, newValue: string) {
-    return this.mongoDatabase.getDatabase()
-        .collection('simpleData')
+  async readAll() {
+    return await this.mongoDatabase.getDatabase().collection('parents').find();
+  }
+
+  async updateOne(id: string, newValue: string) {
+    return await this.mongoDatabase.getDatabase()
+        .collection('parents')
         .updateOne({'_id': new ObjectID(id)}, {$set: {'name': newValue}});
   }
 
-  deleteOne(id: string) {
-    return this.mongoDatabase.getDatabase()
-        .collection('simpleData')
+  async deleteOne(id: string) {
+    return await this.mongoDatabase.getDatabase()
+        .collection('parents')
         .deleteOne(
             {'_id': new ObjectID(id)},
         );

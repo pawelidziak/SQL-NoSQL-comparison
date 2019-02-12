@@ -1,5 +1,5 @@
 import {Application} from 'express';
-import {MongoController} from './MongoController';
+import {SurveyController} from './SurveyController';
 
 export class AppRoutes {
   static DB_ROUTES = {
@@ -9,7 +9,7 @@ export class AppRoutes {
     deleteMany: '/deleteMany',
   };
   static generateRoutes(app: Application): void {
-    app.use('/api/mongo', new MongoController().router);
+    app.use('/api', new SurveyController().router);
     // app.use('/api/mysql', new MySQLRoutes().router);
   }
 }

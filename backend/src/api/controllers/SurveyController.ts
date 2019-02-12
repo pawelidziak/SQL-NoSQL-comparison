@@ -7,7 +7,7 @@ import {SurveyService} from '../../infrastructure/services/SurveyService';
 
 import {AppRoutes} from './AppRoutes';
 
-export class MongoController {
+export class SurveyController {
   private _router: Router = Router();
 
   private surveyService: SurveyService;
@@ -60,18 +60,18 @@ export class MongoController {
   private readMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.surveyRead(req.body as RequestModel)
         .then((result: SurveyResult) => res.json(result))
-        .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .catch((err: Error) => res.status(404).send('readMany ERROR'));
   }
 
   private updateMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.updateMany(req.body as RequestModel)
         .then((result: SurveyResult) => res.json(result))
-        .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .catch((err: Error) => res.status(404).send('updateMany ERROR'));
   }
 
   private deleteMany(req: Request, res: Response, next: NextFunction) {
     this.surveyService.deleteMany(req.body as RequestModel)
         .then((result: SurveyResult) => res.json(result))
-        .catch((err: Error) => res.status(404).send('createMany ERROR'));
+        .catch((err: Error) => res.status(404).send('deleteMany ERROR'));
   }
 }

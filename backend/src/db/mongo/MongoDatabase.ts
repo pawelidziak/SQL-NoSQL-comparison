@@ -1,20 +1,24 @@
 import {Db, MongoClient} from 'mongodb';
+import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {MONGODB_CONFIG} from './Mongodb.config';
 
 /**
- *  Class with ONLY connection methods
+ *  Class with ONLY con methods
  */
 export class MongoDatabase {
   private static instance: MongoDatabase;
 
-  private readonly DB_URL = 'mongodb://localhost:27017/mgrMongo';
+  private readonly DB_URL = `mongodb://${MONGODB_CONFIG.host}:${
+      MONGODB_CONFIG.port}/${MONGODB_CONFIG.db_name}`;
   private _database: MongoClient|null;
+  readonly PARENTS_COL = 'parents';
 
   private constructor() {
     this._database = null;
     this.connect();
   }
 
-  static getInstance() {
+  static getInstance(): MongoDatabase {
     if (!MongoDatabase.instance) {
       MongoDatabase.instance = new MongoDatabase();
     }
@@ -27,11 +31,12 @@ export class MongoDatabase {
   connect(): void {
     if (!this._database) {
       MongoClient.connect(this.DB_URL, {useNewUrlParser: true}, (err, db) => {
-        if (err) throw err;
+        if (err) throw new DatabaseConnectionErr('MongoDB connection failed.');
         this._database = db;
-        db.db().dropDatabase();
-        db.db().createCollection('simpleData');
-        db.db().createCollection('extendData');
+        console.log('Mongo CONNECTED');
+        db.db().dropDatabase().then(() => {
+          db.db().createCollection(this.PARENTS_COL);
+        });
       });
     }
   }
