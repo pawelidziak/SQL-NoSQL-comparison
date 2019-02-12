@@ -28,14 +28,12 @@ export class MongoRepository {
   async updateOne(id: string, newValue: string) {
     return await this.mongoDatabase.getDatabase()
         .collection('parents')
-        .updateOne({'_id': new ObjectID(id)}, {$set: {'name': newValue}});
+        .updateOne({'_id': new ObjectID(id)}, {$set: {name: newValue}});
   }
 
   async deleteOne(id: string) {
     return await this.mongoDatabase.getDatabase()
         .collection('parents')
-        .deleteOne(
-            {'_id': new ObjectID(id)},
-        );
+        .deleteOne({'_id': new ObjectID(id)});
   }
 }

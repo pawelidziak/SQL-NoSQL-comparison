@@ -42,7 +42,6 @@ export class SurveyService {
 
   async surveyRead(reqModel: RequestModel) {
     const parentModels: ParentI[] = GenerateData.getParents(reqModel);
-
     const result: DbResult[] = [];
 
     // MongoDB
@@ -66,7 +65,6 @@ export class SurveyService {
 
   async updateMany(reqModel: RequestModel) {
     const parentModels: ParentI[] = GenerateData.getParents(reqModel);
-
     const result: DbResult[] = [];
 
     // MongoDB
@@ -75,7 +73,13 @@ export class SurveyService {
       time: await this.mongoService.updateMany(parentModels)
     });
 
+    console.log(parentModels);
+
     // MySQL
+    result.push({
+      dbName: DbName.MySQL,
+      time: await this.mysqlService.updateMany(parentModels)
+    });
 
     return {
       operation: OperationType.UPDATE,
@@ -86,7 +90,6 @@ export class SurveyService {
 
   async deleteMany(reqModel: RequestModel) {
     const parentModels: ParentI[] = GenerateData.getParents(reqModel);
-
     const result: DbResult[] = [];
 
     // MongoDB
@@ -96,6 +99,10 @@ export class SurveyService {
     });
 
     // MySQL
+    result.push({
+      dbName: DbName.MySQL,
+      time: await this.mysqlService.deleteMany(parentModels)
+    });
 
     return {
       operation: OperationType.DELETE,

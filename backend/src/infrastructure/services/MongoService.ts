@@ -1,8 +1,7 @@
 import {ParentI,} from '../../core/models/ParentModel';
 import {MongoDatabase} from '../../db/mongo/MongoDatabase';
 import {Benchmark} from '../../utils/Benchmark';
-import {CreateErr} from '../errors/CreateErr';
-import {ReadErr} from '../errors/ReadErr';
+import {CreateErr, ReadErr, UpdateErr, DeleteErr} from '../errors';
 import {MongoRepository} from '../repositories/MongoRepository';
 
 export class MongoService {
@@ -22,9 +21,8 @@ export class MongoService {
     const time = new Benchmark();
 
     for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i]).catch(() => {
-        throw new CreateErr('MongoDB CREATE in createMany() failed.');
-      });
+      await this.repo.createOne(parentModels[i])
+        .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
     }
 
     return (time.elapsed());
@@ -65,32 +63,28 @@ export class MongoService {
    * 3. Save their id's
    * 4. Start timer and update all objects
    * 5. Stop timer
-   * @param objList - objects to update
+   * @param parentModels - objects to update
    */
-  async updateMany(objList: ParentI[]) {
+  async updateMany(parentModels: ParentI[]) {
     await MongoDatabase.getInstance().getDatabase().dropDatabase();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < objList.length; i++) {
-      await this.repo.createOne(objList[i])
-          .then(res => idArray.push(res.insertedId.toHexString()))
-          .catch(() => {
-            throw new CreateErr('MongoDB CREATE in updateMany() failed.');
-          });
+    for (let i = 0; i < parentModels.length; i++) {
+      await this.repo.createOne(parentModels[i])
+        .then(res => idArray.push(res.insertedId.toHexString()))
+        .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
     }
 
     // then update
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
-      await this.repo.updateOne(idArray[i], `Updated ${i}`).catch(() => {
-        throw new Error('Mongo read ERROR.');
-      });
+      await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
+        .catch(() => new UpdateErr('Mongo read ERROR.'));
     }
 
     return (time.elapsed());
   }
-
 
   /**
    * 1. Clear database
@@ -98,27 +92,24 @@ export class MongoService {
    * 3. Save their id's
    * 4. Start timer and delete all objects
    * 5. Stop timer
-   * @param objList - objects to delete
+   * @param parentModels - objects to delete
    */
-  async deleteMany(objList: ParentI[]) {
+  async deleteMany(parentModels: ParentI[]) {
     await MongoDatabase.getInstance().getDatabase().dropDatabase();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < objList.length; i++) {
-      await this.repo.createOne(objList[i])
+    for (let i = 0; i < parentModels.length; i++) {
+      await this.repo.createOne(parentModels[i])
           .then(res => idArray.push(res.insertedId.toHexString()))
-          .catch(() => {
-            throw new CreateErr('MongoDB CREATE in deleteMany() failed.');
-          });
+          .catch(() => new CreateErr('MongoDB CREATE in deleteMany() failed.'));
     }
 
-    // read then
+    // then delete
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
-      await this.repo.deleteOne(idArray[i]).catch(() => {
-        throw new Error('Mongo read ERROR.');
-      });
+      await this.repo.deleteOne(idArray[i])
+        .catch(() => new DeleteErr('Mongo read ERROR.'));
     }
 
     return (time.elapsed());
