@@ -1,0 +1,18 @@
+@import '../../../../assets/scss/variables';
+
+.survey-options, .survey-actions {
+  padding: $margin;
+}
+
+.survey-option-row {
+  align-items: center;
+  min-height: 50px;
+}
+
+.survey-actions{
+  display: flex;
+  justify-content: space-around;
+  button {
+    text-transform: uppercase;
+  }
+}

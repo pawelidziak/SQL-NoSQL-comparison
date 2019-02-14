@@ -73,8 +73,6 @@ export class SurveyService {
       time: await this.mongoService.updateMany(parentModels)
     });
 
-    console.log(parentModels);
-
     // MySQL
     result.push({
       dbName: DbName.MySQL,

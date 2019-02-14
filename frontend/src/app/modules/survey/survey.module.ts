@@ -1,8 +1,9 @@
 import {NgModule} from '@angular/core';
 import {SurveyComponent} from './components/survey.component';
 import {surveyRouting} from './survey.routing';
-import {MatButtonModule, MatCardModule, MatIconModule, MatTabsModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatTabsModule} from '@angular/material';
 import {SharedModule} from '@shared/shared.module';
+import {SurveyService} from '@modules/survey/survey.service';
 
 @NgModule({
   declarations: [
@@ -12,13 +13,17 @@ import {SharedModule} from '@shared/shared.module';
     SharedModule,
     surveyRouting,
 
-    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
-    MatIconModule,
-    MatTabsModule
+    MatRadioModule,
+    MatTabsModule,
+    MatCardModule
   ],
   exports: [],
-  providers: []
+  providers: [
+    SurveyService
+  ]
 })
 export class SurveyModule {
 }

@@ -23,28 +23,28 @@ export class SurveyController {
 
   init() {
     // Create
-    this._router.get(
+    this._router.post(
         AppRoutes.DB_ROUTES.createMany,
         (req: Request, res: Response, next: NextFunction) => {
           this.createMany(req, res, next);
         });
 
     // Read
-    this._router.get(
+    this._router.post(
         AppRoutes.DB_ROUTES.readMany,
         (req: Request, res: Response, next: NextFunction) => {
           this.readMany(req, res, next);
         });
 
     // Update
-    this._router.get(
+    this._router.post(
         AppRoutes.DB_ROUTES.updateMany,
         (req: Request, res: Response, next: NextFunction) => {
           this.updateMany(req, res, next);
         });
 
     // Delete
-    this._router.get(
+    this._router.post(
         AppRoutes.DB_ROUTES.deleteMany,
         (req: Request, res: Response, next: NextFunction) => {
           this.deleteMany(req, res, next);
