@@ -2,12 +2,19 @@ import { NgModule } from '@angular/core';
 import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 
 const routes: Routes = [
-  // DASHBOARD
   {
-    path: '',
-    loadChildren: './modules/dashboard/dashboard.module#DashboardModule'
+    path: 'survey',
+    loadChildren: './modules/survey/survey.module#SurveyModule'
   },
-  {path: '**', redirectTo: '', pathMatch: 'full'}
+  {
+    path: 'info',
+    loadChildren: './modules/info/info.module#InfoModule'
+  },
+  {
+    path: 'analysis',
+    loadChildren: './modules/analysis/analysis.module#AnalysisModule'
+  },
+  {path: '**', redirectTo: 'survey', pathMatch: 'full'}
 ];
 
 @NgModule({
