@@ -87,14 +87,16 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   private addResult(res: SurveyResult): void {
-    const tmp = this.results.get(res.operation);
-    const index = tmp.findIndex(x => x.quantity === res.quantity);
+    const list = [...this.results.get(res.operation)];
+    const tmp = [];
+    const index = list.findIndex(x => x.quantity === res.quantity);
     if (index !== -1) {
-      tmp[index] = res;
+      list[index] = res;
     } else {
-      tmp.push(res);
+      list.push(res);
     }
-    tmp.sort((a, b) => a.quantity > b.quantity ? 1 : -1);
+    list.sort((a, b) => a.quantity > b.quantity ? 1 : -1);
+    this.results.set(res.operation, list);
   }
 
 }

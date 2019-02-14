@@ -30,7 +30,9 @@
               "src/styles.scss",
               "src/assets/custom-theme.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/chart.js/dist/Chart.bundle.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -85,9 +87,12 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/custom-theme.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/chart.js/dist/Chart.bundle.js"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
