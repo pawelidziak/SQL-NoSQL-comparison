@@ -11,6 +11,8 @@ interface NavLink {
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
+  masterTitle = 'Comparative analysis of relational and non-relational databases on selected examples';
+  masterAuthor = 'Paweł Idziak, Wrocław 2019';
 
   navLinks: NavLink[] = [
     {path: 'survey', label: 'Survey'},

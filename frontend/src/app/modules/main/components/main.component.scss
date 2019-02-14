@@ -1,0 +1,25 @@
+@import '../../../../assets/scss/variables';
+
+.my-header {
+  text-align: center;
+  padding: 3*$margin $margin;
+  background-color: $primary_light;
+  color: $text-white;
+}
+
+.master-title {
+  font-style: italic;
+  margin-bottom: $margin;
+}
+
+.mail {
+  color: $text-white;
+}
+
+.my-nav {
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+}

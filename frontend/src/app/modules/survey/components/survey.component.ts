@@ -35,6 +35,9 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   createSurvey(): void {
+    if (this.requestInvalid()) {
+      return;
+    }
     this.subscriptions.push(
       this.surveyService.createMany(this.req).subscribe(
         (res: SurveyResult) => this.addResult(res),
@@ -44,6 +47,9 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   readSurvey(): void {
+    if (this.requestInvalid()) {
+      return;
+    }
     this.subscriptions.push(
       this.surveyService.readMany(this.req).subscribe(
         (res: SurveyResult) => this.addResult(res),
@@ -53,6 +59,9 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   updateSurvey(): void {
+    if (this.requestInvalid()) {
+      return;
+    }
     this.subscriptions.push(
       this.surveyService.updateMany(this.req).subscribe(
         (res: SurveyResult) => this.addResult(res),
@@ -62,6 +71,9 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   deleteSurvey(): void {
+    if (this.requestInvalid()) {
+      return;
+    }
     this.subscriptions.push(
       this.surveyService.deleteMany(this.req).subscribe(
         (res: SurveyResult) => this.addResult(res),
@@ -70,7 +82,11 @@ export class SurveyComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addResult(res: SurveyResult) {
+  private requestInvalid(): boolean {
+    return this.req.quantity < 1 || this.req.quantity > 10000;
+  }
+
+  private addResult(res: SurveyResult): void {
     const tmp = this.results.get(res.operation);
     const index = tmp.findIndex(x => x.quantity === res.quantity);
     if (index !== -1) {

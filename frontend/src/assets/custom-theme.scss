@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+// Blue theme
+$blue-primary: mat-palette($mat-indigo);
+$blue-accent: mat-palette($mat-amber);
+$blue-warn: mat-palette($mat-red);
+
+$blue-theme: mat-light-theme($blue-primary, $blue-accent, $blue-warn);
+
+// ADD THEMES
+
+// default
+@include angular-material-theme($blue-theme);
+
+.blue-theme {
+  @include angular-material-theme($blue-theme);
+}
