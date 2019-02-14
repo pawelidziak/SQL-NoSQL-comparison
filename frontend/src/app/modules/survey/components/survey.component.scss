@@ -7,8 +7,14 @@
 
 .survey-actions{
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   button {
     text-transform: uppercase;
   }
+}
+
+.survey-loader {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
 }

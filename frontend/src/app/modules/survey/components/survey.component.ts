@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SurveyService} from '../survey.service';
 import {OperationType, RequestModel, SurveyResult} from '@core/models';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,6 +10,8 @@ import {OperationType, RequestModel, SurveyResult} from '@core/models';
 })
 export class SurveyComponent implements OnInit, OnDestroy {
   private subscriptions: any[] = [];
+  selectedIndex = 0;
+  surveyLoading = false;
   operations = OperationType;
 
   req: RequestModel = {
@@ -17,7 +20,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     testsReps: 1
   };
 
-  results: Map<OperationType, SurveyResult[]> = new Map([
+  results: Map<OperationType | string, SurveyResult[]> = new Map([
     [OperationType.CREATE, []],
     [OperationType.READ, []],
     [OperationType.UPDATE, []],
@@ -34,48 +37,19 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 
-  createSurvey(): void {
-    if (this.requestInvalid()) {
-      return;
-    }
-    this.subscriptions.push(
-      this.surveyService.createMany(this.req).subscribe(
-        (res: SurveyResult) => this.addResult(res),
-        err => console.error(err)
-      )
+  operationTypeValues(): string[] {
+    return Object.keys(OperationType).filter(
+      (type) => isNaN(type as any) && type !== 'operationTypeValues'
     );
   }
 
-  readSurvey(): void {
+  sendRequest(operation: OperationType): void {
     if (this.requestInvalid()) {
       return;
     }
+    this.surveyLoading = true;
     this.subscriptions.push(
-      this.surveyService.readMany(this.req).subscribe(
-        (res: SurveyResult) => this.addResult(res),
-        err => console.error(err)
-      )
-    );
-  }
-
-  updateSurvey(): void {
-    if (this.requestInvalid()) {
-      return;
-    }
-    this.subscriptions.push(
-      this.surveyService.updateMany(this.req).subscribe(
-        (res: SurveyResult) => this.addResult(res),
-        err => console.error(err)
-      )
-    );
-  }
-
-  deleteSurvey(): void {
-    if (this.requestInvalid()) {
-      return;
-    }
-    this.subscriptions.push(
-      this.surveyService.deleteMany(this.req).subscribe(
+      this.recognizeReq(operation).subscribe(
         (res: SurveyResult) => this.addResult(res),
         err => console.error(err)
       )
@@ -86,9 +60,25 @@ export class SurveyComponent implements OnInit, OnDestroy {
     return this.req.quantity < 1 || this.req.quantity > 10000;
   }
 
+  private recognizeReq(operation: OperationType): Observable<SurveyResult> {
+    switch (operation) {
+      case OperationType.CREATE:
+        this.selectedIndex = 0;
+        return this.surveyService.createMany(this.req);
+      case OperationType.READ:
+        this.selectedIndex = 1;
+        return this.surveyService.readMany(this.req);
+      case OperationType.UPDATE:
+        this.selectedIndex = 2;
+        return this.surveyService.updateMany(this.req);
+      case OperationType.DELETE:
+        this.selectedIndex = 3;
+        return this.surveyService.deleteMany(this.req);
+    }
+  }
+
   private addResult(res: SurveyResult): void {
     const list = [...this.results.get(res.operation)];
-    const tmp = [];
     const index = list.findIndex(x => x.quantity === res.quantity);
     if (index !== -1) {
       list[index] = res;
@@ -97,6 +87,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     }
     list.sort((a, b) => a.quantity > b.quantity ? 1 : -1);
     this.results.set(res.operation, list);
+    this.surveyLoading = false;
   }
 
 }

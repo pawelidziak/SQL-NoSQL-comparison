@@ -1,6 +1,5 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {SurveyResult} from '@core/models';
-import {BaseChartDirective} from 'ng2-charts';
 
 interface BarData {
   data: number[];
@@ -17,7 +16,7 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
   chartOptions: any;
   chartLabels = [];
   chartData: BarData[] = [];
-  @ViewChild(BaseChartDirective) private chart;
+  showChart = true;
 
   constructor() {
   }
@@ -29,8 +28,9 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
+      this.showChart = false;
       this.initChartLabelsAndData();
-      this.chart.refresh();
+      setTimeout(() => this.showChart = true, 1);
     }
   }
 
@@ -38,20 +38,31 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
     this.chartOptions = {
       scaleShowVerticalLines: false,
       responsive: true,
+      legend: {
+        labels: {
+          fontSize: 15
+        }
+      },
       scales: {
         yAxes: [{
           ticks: {
-            beginAtZero: true
+            beginAtZero: true,
+            fontSize: 20
           },
           scaleLabel: {
             display: true,
-            labelString: 'Time [ms]'
+            labelString: 'Time [ms]',
+            fontSize: 20
           }
         }],
         xAxes: [{
+          ticks: {
+            fontSize: 20
+          },
           scaleLabel: {
             display: true,
-            labelString: 'Quantity'
+            labelString: 'Quantity',
+            fontSize: 20
           }
         }]
       }
@@ -63,16 +74,13 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
     this.chartData = [];
     for (const res of this.result) {
       this.chartLabels.push(res.quantity);
-      console.log(this.chartLabels);
       for (const dbRes of res.dbResult) {
         const index = this.chartData.findIndex(x => x.label === dbRes.dbName);
         if (index !== -1) {
           this.chartData[index].data.push(dbRes.time);
         } else {
-          const tmp = [];
-          tmp.push(dbRes.time);
           this.chartData.push(
-            {data: tmp, label: dbRes.dbName}
+            {data: [dbRes.time], label: dbRes.dbName}
           );
         }
       }

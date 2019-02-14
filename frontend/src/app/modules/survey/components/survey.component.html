@@ -1,5 +1,6 @@
-<section class="section-padding">
+<section class="section-padding" style="padding-bottom: 200px;">
 
+  <!-- SURVEY SETTINGS -->
   <mat-card class="my-card">
 
     <div class="my-card-header">
@@ -46,7 +47,6 @@
           <p>Select the complexity of the query (for more info go to Information): </p>
         </div>
         <div class="col-6 text-center">
-          <!--<mat-checkbox [(ngModel)]="req.simpleQuery">Simple</mat-checkbox>-->
           <mat-radio-group [(ngModel)]="req.simpleQuery">
             <mat-radio-button [value]="true" style="margin-right: 24px;">Simple</mat-radio-button>
             <mat-radio-button [value]="false">Complex</mat-radio-button>
@@ -56,41 +56,65 @@
 
       <div class="my-divider"></div>
 
-      <div class="survey-actions">
-        <button mat-raised-button
-                color="primary"
-                (click)="createSurvey()">
-          Create
-        </button>
-        <button mat-raised-button
-                color="primary"
-                (click)="readSurvey()">
-          Read
-        </button>
-        <button mat-raised-button
-                color="primary"
-                (click)="updateSurvey()">
-          Update
-        </button>
-        <button mat-raised-button
-                color="primary"
-                (click)="deleteSurvey()">
-          Delete
-        </button>
+      <div class="row survey-option-row">
+        <div class="col-6 text-center">
+          Let's test CRUD operations:
+        </div>
+        <div class="col-6">
+          <div class="survey-actions">
+            <button mat-raised-button
+                    color="primary"
+                    (click)="sendRequest(operations.CREATE)">
+              Create
+            </button>
+            <button mat-raised-button
+                    color="primary"
+                    (click)="sendRequest(operations.READ)">
+              Read
+            </button>
+            <button mat-raised-button
+                    color="primary"
+                    (click)="sendRequest(operations.UPDATE)">
+              Update
+            </button>
+            <button mat-raised-button
+                    color="primary"
+                    (click)="sendRequest(operations.DELETE)">
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
+
     </div>
   </mat-card>
 
-  <app-survey-result [result]="results.get(operations.CREATE)"
-                     [operation]="operations.CREATE">
-  </app-survey-result>
-  <!--<app-survey-result [result]="result.get(operations.READ)"-->
-                     <!--[operation]="operations.READ">-->
-  <!--</app-survey-result>-->
-  <!--<app-survey-result [result]="result.get(operations.UPDATE)"-->
-                     <!--[operation]="operations.UPDATE">-->
-  <!--</app-survey-result>-->
-  <!--<app-survey-result [result]="result.get(operations.DELETE)"-->
-                     <!--[operation]="operations.DELETE">-->
-  <!--</app-survey-result>-->
+  <!-- SURVEY RESULTS -->
+  <mat-card class="my-card" style="margin-top: 48px;">
+
+    <div class="my-card-header">
+      <h4>Survey results</h4>
+    </div>
+
+    <mat-tab-group [dynamicHeight]="true"
+                   style="min-height: 500px"
+                   animationDuration="0ms"
+                   mat-align-tabs="center"
+                   [selectedIndex]="selectedIndex"
+                   (selectedIndexChange)="selectedIndex = $event">
+
+      <mat-tab *ngFor="let operation of operationTypeValues()"
+               [label]="operation">
+        <div *ngIf="surveyLoading"
+             class="survey-loader">
+          <mat-spinner [diameter]="150"></mat-spinner>
+        </div>
+        <app-survey-result *ngIf="!surveyLoading"
+                           [result]="results.get(operation)"
+                           [operation]="operation">
+        </app-survey-result>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+
 </section>
