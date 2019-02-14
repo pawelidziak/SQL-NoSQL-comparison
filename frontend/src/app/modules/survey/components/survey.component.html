@@ -1,80 +1,96 @@
 <section class="section-padding">
 
-  <mat-card class="survey-options">
-    <div class="row survey-option-row">
-      <div class="col-6 text-center">
-        <p>Choose how many instances will be generated: </p>
-      </div>
-      <div class="col-6 text-center">
-        <mat-form-field appearance="outline">
-          <mat-label>Quantity</mat-label>
-          <input matInput
-                 placeholder="Quantity"
-                 type="number"
-                 min="1"
-                 max="10000"
-                 [(ngModel)]="req.quantity">
-        </mat-form-field>
-      </div>
+  <mat-card class="my-card">
+
+    <div class="my-card-header">
+      <h4>Survey settings</h4>
     </div>
 
-    <div class="row survey-option-row">
-      <div class="col-6 text-center">
-        <p>Select the number of test repeats (the results will be averaged): </p>
+    <div class="my-card-content">
+      <div class="row survey-option-row">
+        <div class="col-6 text-center">
+          <p>Choose how many instances will be generated: </p>
+        </div>
+        <div class="col-6 text-center">
+          <mat-form-field appearance="outline">
+            <mat-label>Quantity</mat-label>
+            <input matInput
+                   placeholder="Quantity"
+                   type="number"
+                   min="1"
+                   max="10000"
+                   [(ngModel)]="req.quantity">
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col-6 text-center">
-        <mat-form-field appearance="outline">
-          <mat-label>Tests</mat-label>
-          <input matInput
-                 placeholder="Tests"
-                 type="number"
-                 min="1"
-                 max="10"
-                 [(ngModel)]="req.testsReps">
-        </mat-form-field>
+
+      <div class="row survey-option-row">
+        <div class="col-6 text-center">
+          <p>Select the number of test repeats (the results will be averaged): </p>
+        </div>
+        <div class="col-6 text-center">
+          <mat-form-field appearance="outline">
+            <mat-label>Tests</mat-label>
+            <input matInput
+                   placeholder="Tests"
+                   type="number"
+                   min="1"
+                   max="10"
+                   [(ngModel)]="req.testsReps">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row survey-option-row">
+        <div class="col-6 text-center">
+          <p>Select the complexity of the query (for more info go to Information): </p>
+        </div>
+        <div class="col-6 text-center">
+          <!--<mat-checkbox [(ngModel)]="req.simpleQuery">Simple</mat-checkbox>-->
+          <mat-radio-group [(ngModel)]="req.simpleQuery">
+            <mat-radio-button [value]="true" style="margin-right: 24px;">Simple</mat-radio-button>
+            <mat-radio-button [value]="false">Complex</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="my-divider"></div>
+
+      <div class="survey-actions">
+        <button mat-raised-button
+                color="primary"
+                (click)="createSurvey()">
+          Create
+        </button>
+        <button mat-raised-button
+                color="primary"
+                (click)="readSurvey()">
+          Read
+        </button>
+        <button mat-raised-button
+                color="primary"
+                (click)="updateSurvey()">
+          Update
+        </button>
+        <button mat-raised-button
+                color="primary"
+                (click)="deleteSurvey()">
+          Delete
+        </button>
       </div>
     </div>
-
-    <div class="row survey-option-row">
-      <div class="col-6 text-center">
-        <p>Select the complexity of the query (for more info go to Information): </p>
-      </div>
-      <div class="col-6 text-center">
-        <!--<mat-checkbox [(ngModel)]="req.simpleQuery">Simple</mat-checkbox>-->
-        <mat-radio-group [(ngModel)]="req.simpleQuery">
-          <mat-radio-button [value]="true" style="margin-right: 24px;">Simple</mat-radio-button>
-          <mat-radio-button [value]="false">Complex</mat-radio-button>
-        </mat-radio-group>
-      </div>
-    </div>
-
-    <div class="my-divider"></div>
-
-    <div class="survey-actions">
-      <button mat-raised-button
-              color="primary"
-              (click)="createSurvey()">
-        Create
-      </button>
-      <button mat-raised-button
-              color="primary"
-              (click)="readSurvey()">
-        Read
-      </button>
-      <button mat-raised-button
-              color="primary"
-              (click)="updateSurvey()">
-        Update
-      </button>
-      <button mat-raised-button
-              color="primary"
-              (click)="deleteSurvey()">
-        Delete
-      </button>
-    </div>
-
   </mat-card>
 
-
-
+  <app-survey-result [result]="results.get(operations.CREATE)"
+                     [operation]="operations.CREATE">
+  </app-survey-result>
+  <app-survey-result [result]="results.get(operations.READ)"
+                     [operation]="operations.READ">
+  </app-survey-result>
+  <app-survey-result [result]="results.get(operations.UPDATE)"
+                     [operation]="operations.UPDATE">
+  </app-survey-result>
+  <app-survey-result [result]="results.get(operations.DELETE)"
+                     [operation]="operations.DELETE">
+  </app-survey-result>
 </section>

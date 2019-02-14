@@ -1,0 +1,21 @@
+<section class="section-survey-result">
+  <mat-card class="my-card">
+
+    <div class="my-card-header">
+      <h4>Survey {{operation}} results</h4>
+    </div>
+
+    <div class="my-card-content">
+      <!-- NO RESULTS -->
+      <div *ngIf="result.length === 0" class="no-result">
+        <h4>Test the operation: <strong>{{operation}}</strong></h4>
+      </div>
+
+      <!-- RESULTS -->
+      <div *ngIf="result.length > 0">
+        <app-survey-result-table [result]="result"></app-survey-result-table>
+      </div>
+    </div>
+
+  </mat-card>
+</section>

@@ -29,3 +29,23 @@ p, h1, h2, h3, h4, h5, h6 {
   background-color: $divider_color;
   width: 100%;
 }
+
+/**
+    CARD
+ */
+.my-card {
+  border-radius: $border-radius !important;
+  padding: 0 !important;
+}
+
+.my-card-header {
+  background-color: $divider_color;
+  color: $primary;
+  padding: .5*$margin;
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+}
+
+.my-card-content {
+  padding: $margin;
+}

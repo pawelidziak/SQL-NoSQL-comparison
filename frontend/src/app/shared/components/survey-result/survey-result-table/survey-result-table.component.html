@@ -1,0 +1,16 @@
+<table>
+  <!-- HEADERS-->
+  <tr>
+    <th>Quantity</th>
+    <th *ngFor="let db of result[0]?.dbResult">
+      {{db.dbName}} [ms]
+    </th>
+  </tr>
+  <!-- ROWS -->
+  <tr *ngFor="let res of result">
+    <td>{{res.quantity}}</td>
+    <td *ngFor="let db of res.dbResult">
+      {{db.time}}
+    </td>
+  </tr>
+</table>

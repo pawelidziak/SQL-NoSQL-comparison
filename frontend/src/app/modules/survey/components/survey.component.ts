@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SurveyService} from '../survey.service';
-import {RequestModel} from '@core/models';
+import {OperationType, RequestModel, SurveyResult} from '@core/models';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,12 +9,20 @@ import {RequestModel} from '@core/models';
 })
 export class SurveyComponent implements OnInit, OnDestroy {
   private subscriptions: any[] = [];
+  operations = OperationType;
 
   req: RequestModel = {
     quantity: 100,
     simpleQuery: true,
     testsReps: 1
   };
+
+  results: Map<OperationType, SurveyResult[]> = new Map([
+    [OperationType.CREATE, []],
+    [OperationType.READ, []],
+    [OperationType.UPDATE, []],
+    [OperationType.DELETE, []],
+  ]);
 
   constructor(private readonly surveyService: SurveyService) {
   }
@@ -29,7 +37,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   createSurvey(): void {
     this.subscriptions.push(
       this.surveyService.createMany(this.req).subscribe(
-        res => console.log(res),
+        (res: SurveyResult) => this.addResult(res),
         err => console.error(err)
       )
     );
@@ -38,7 +46,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   readSurvey(): void {
     this.subscriptions.push(
       this.surveyService.readMany(this.req).subscribe(
-        res => console.log(res),
+        (res: SurveyResult) => this.addResult(res),
         err => console.error(err)
       )
     );
@@ -47,7 +55,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   updateSurvey(): void {
     this.subscriptions.push(
       this.surveyService.updateMany(this.req).subscribe(
-        res => console.log(res),
+        (res: SurveyResult) => this.addResult(res),
         err => console.error(err)
       )
     );
@@ -56,9 +64,21 @@ export class SurveyComponent implements OnInit, OnDestroy {
   deleteSurvey(): void {
     this.subscriptions.push(
       this.surveyService.deleteMany(this.req).subscribe(
-        res => console.log(res),
+        (res: SurveyResult) => this.addResult(res),
         err => console.error(err)
       )
     );
   }
+
+  private addResult(res: SurveyResult) {
+    const tmp = this.results.get(res.operation);
+    const index = tmp.findIndex(x => x.quantity === res.quantity);
+    if (index !== -1) {
+      tmp[index] = res;
+    } else {
+      tmp.push(res);
+    }
+    tmp.sort((a, b) => a.quantity > b.quantity ? 1 : -1);
+  }
+
 }

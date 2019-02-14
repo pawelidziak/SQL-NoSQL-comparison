@@ -1,0 +1,15 @@
+@import '../../../../../assets/scss/variables';
+
+/**
+       TABLE
+ */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid $divider_color;
+  text-align: left;
+  padding: 8px;
+}
