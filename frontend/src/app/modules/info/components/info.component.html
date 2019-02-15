@@ -1,11 +1,20 @@
-<br><br><br><br><br>
-<app-highlight [code]="mysql.mysqlExec"></app-highlight>
-<br><br><br><br><br>
-<app-highlight [code]="mysql.mysqlCreateSimple"></app-highlight>
-<br><br><br><br><br>
-<app-highlight [code]="mysql.mysqlReadSimple"></app-highlight>
-<br><br><br><br><br>
-<app-highlight [code]="mysql.mysqlUpdateSimple"></app-highlight>
-<br><br><br><br><br>
-<app-highlight [code]="mysql.mysqlDeleteSimple"></app-highlight>
-<br><br><br><br><br>
+<section class="section-info">
+  <mat-tab-group [dynamicHeight]="true"
+                 style="min-height: 500px"
+                 mat-align-tabs="center">
+    <mat-tab *ngFor="let db of dbNameValues()"
+             [label]="db">
+
+      <div *ngFor="let infoQuery of componentData.get(db)">
+        <h2 class="header-divider">{{infoQuery.title}}</h2>
+        <div class="query" *ngFor="let query of infoQuery.queryList">
+          <h2>{{query.title}}</h2>
+          <p>{{query.desc}}</p>
+          <app-highlight [code]="query.code"></app-highlight>
+        </div>
+
+      </div>
+
+    </mat-tab>
+  </mat-tab-group>
+</section>

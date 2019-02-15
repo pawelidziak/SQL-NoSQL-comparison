@@ -1,5 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {MysqlQueries, MongoQueries} from '../db-queries';
+import {MongoComplexQueries, MongolEntry, MongoSimpleQueries, MysqlComplexQueries, MysqlEntry, MysqlSimpleQueries} from '../db-queries';
+import {DbName} from '@core/models';
+import {QueryModel} from '@modules/info/db-queries/QueryModel';
+
+interface InfoQuery {
+  title: string;
+  queryList: QueryModel[];
+}
 
 @Component({
   selector: 'app-info',
@@ -7,14 +14,60 @@ import {MysqlQueries, MongoQueries} from '../db-queries';
   styleUrls: ['./info.component.scss']
 })
 export class InfoComponent implements OnInit {
+  /**
+   * MySQL
+   */
+  private mysqlEntry = MysqlEntry;
+  private mysqlSimple = MysqlSimpleQueries;
+  private mysqlComplex = MysqlComplexQueries;
 
-  mysql = MysqlQueries;
-  mongo = MongoQueries;
+  /**
+   * MongoDB
+   */
+  private mongoEntry = MongolEntry;
+  private mongoSimple = MongoSimpleQueries;
+  private mongoComplex = MongoComplexQueries;
+
+  componentData: Map<DbName | string, InfoQuery[]> = new Map();
 
   constructor() {
   }
 
   ngOnInit() {
+    for (const db of this.dbNameValues()) {
+      const allQueries = this.getQueries(db);
+      this.componentData.set(db, [
+          {
+            title: `${db} Entry`,
+            queryList: allQueries[0]
+          },
+          {
+            title: `${db} Simple Queries`,
+            queryList: allQueries[1]
+          },
+          {
+            title: `${db} Complex Queries`,
+            queryList: allQueries[2]
+          }
+        ]
+      );
+    }
   }
 
+  dbNameValues(): string[] {
+    return Object.keys(DbName).filter(
+      (type) => isNaN(type as any) && type !== 'dbNameValues'
+    );
+  }
+
+  private getQueries(db: DbName | string): any[] {
+    switch (db) {
+      case DbName.MongoDB:
+        return [this.mongoEntry, this.mongoSimple, this.mongoComplex];
+      case DbName.MySQL:
+        return [this.mysqlEntry, this.mysqlSimple, this.mysqlComplex];
+      default:
+        return [];
+    }
+  }
 }
