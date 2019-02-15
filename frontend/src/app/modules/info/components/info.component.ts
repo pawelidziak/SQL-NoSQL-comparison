@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MysqlQueries, MongoQueries} from '../db-queries';
 
 @Component({
   selector: 'app-info',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InfoComponent implements OnInit {
 
-  constructor() { }
+  mysql = MysqlQueries;
+  mongo = MongoQueries;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }

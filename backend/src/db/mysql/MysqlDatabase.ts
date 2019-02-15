@@ -69,7 +69,7 @@ export class MysqlDatabase {
     });
   }
 
-  exec(sql: string) {
+  exec(sql: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this._con.query(sql, (err, res) => {
         if (err) reject(err);
