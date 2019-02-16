@@ -5,11 +5,22 @@
   min-height: 50px;
 }
 
-.survey-actions{
+.survey-actions {
   display: flex;
   justify-content: space-evenly;
+
   button {
     text-transform: uppercase;
+  }
+}
+
+.file-button {
+  mat-icon {
+    margin-right: .5*$margin;
+  }
+
+  &:first-child {
+    margin-right: .5*$margin;
   }
 }
 
@@ -18,3 +29,4 @@
   display: flex;
   justify-content: center;
 }
+

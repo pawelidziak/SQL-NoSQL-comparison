@@ -57,11 +57,9 @@
       <div class="my-divider"></div>
 
       <div class="row survey-option-row">
-        <div class="col-6 text-center">
-          Let's test CRUD operations:
-        </div>
+        <!-- CRUD -->
         <div class="col-6">
-          <div class="survey-actions">
+          <div class="survey-actions text-center">
             <button mat-raised-button
                     color="primary"
                     (click)="sendRequest(operations.CREATE)">
@@ -84,9 +82,31 @@
             </button>
           </div>
         </div>
+
+        <!-- IMPORT / EXPORT -->
+        <div class="col-6 text-right">
+          <button mat-raised-button
+                  class="file-button"
+                  (click)="saveToFile()"
+                  [disabled]="!upToSave">
+            <mat-icon aria-label="Save">cloud_download</mat-icon>
+            <span>Save</span>
+          </button>
+          <button mat-raised-button
+                  class="file-button"
+                  (click)="fileInput.click()">
+            <mat-icon aria-label="Upload">cloud_upload</mat-icon>
+            <span>Upload</span>
+          </button>
+          <input #fileInput
+                 hidden
+                 accept=".json"
+                 type="file"
+                 (change)="getFiles($event)">
+        </div>
       </div>
 
-    </div>
+    </div> <!-- /card-content -->
   </mat-card>
 
   <!-- SURVEY RESULTS -->

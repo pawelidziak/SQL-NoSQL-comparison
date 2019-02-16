@@ -4,7 +4,7 @@ import {surveyRouting} from './survey.routing';
 import {
   MatButtonModule,
   MatCardModule,
-  MatFormFieldModule,
+  MatFormFieldModule, MatIconModule,
   MatInputModule,
   MatProgressSpinnerModule,
   MatRadioModule,
@@ -24,6 +24,7 @@ import {SurveyResultModule} from '@shared/components/survey-result/survey-result
     SurveyResultModule,
 
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatButtonModule,
     MatRadioModule,

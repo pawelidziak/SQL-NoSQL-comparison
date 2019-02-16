@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SurveyService} from '../survey.service';
 import {OperationType, RequestModel, SurveyResult} from '@core/models';
 import {Observable} from 'rxjs';
+import {FileUtils} from '@shared/utils/FileUtils';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   selectedIndex = 0;
   surveyLoading = false;
   operations = OperationType;
+  upToSave = false;
 
   req: RequestModel = {
     quantity: 100,
@@ -56,6 +58,20 @@ export class SurveyComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * IMPORT / EXPORT
+   */
+  saveToFile(): void {
+    FileUtils.saveMapToFile(this.results, `CRUD-${new Date().getTime()}`);
+  }
+
+  getFiles(event: any): void {
+    FileUtils.readFileToMap(event, (result: any) => this.results = result);
+  }
+
+  /**
+   * PRIVATE METHODS
+   */
   private requestInvalid(): boolean {
     return this.req.quantity < 1 || this.req.quantity > 10000;
   }
@@ -88,6 +104,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     list.sort((a, b) => a.quantity > b.quantity ? 1 : -1);
     this.results.set(res.operation, list);
     this.surveyLoading = false;
+    this.upToSave = true;
   }
 
 }

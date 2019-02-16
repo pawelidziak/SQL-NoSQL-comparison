@@ -34,6 +34,16 @@ export class InfoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.createComponentData();
+  }
+
+  dbNameValues(): string[] {
+    return Object.keys(DbName).filter(
+      (type) => isNaN(type as any) && type !== 'dbNameValues'
+    );
+  }
+
+  private createComponentData(): void {
     for (const db of this.dbNameValues()) {
       const allQueries = this.getQueries(db);
       this.componentData.set(db, [
@@ -54,12 +64,6 @@ export class InfoComponent implements OnInit {
     }
   }
 
-  dbNameValues(): string[] {
-    return Object.keys(DbName).filter(
-      (type) => isNaN(type as any) && type !== 'dbNameValues'
-    );
-  }
-
   private getQueries(db: DbName | string): any[] {
     switch (db) {
       case DbName.MongoDB:
@@ -70,4 +74,5 @@ export class InfoComponent implements OnInit {
         return [];
     }
   }
+
 }
