@@ -62,21 +62,25 @@
           <div class="survey-actions text-center">
             <button mat-raised-button
                     color="primary"
+                    [disabled]="surveyLoading"
                     (click)="sendRequest(operations.CREATE)">
               Create
             </button>
             <button mat-raised-button
                     color="primary"
+                    [disabled]="surveyLoading"
                     (click)="sendRequest(operations.READ)">
               Read
             </button>
             <button mat-raised-button
                     color="primary"
+                    [disabled]="surveyLoading"
                     (click)="sendRequest(operations.UPDATE)">
               Update
             </button>
             <button mat-raised-button
                     color="primary"
+                    [disabled]="surveyLoading"
                     (click)="sendRequest(operations.DELETE)">
               Delete
             </button>
@@ -88,12 +92,13 @@
           <button mat-raised-button
                   class="file-button"
                   (click)="saveToFile()"
-                  [disabled]="!upToSave">
+                  [disabled]="!upToSave || surveyLoading">
             <mat-icon aria-label="Save">cloud_download</mat-icon>
             <span>Save</span>
           </button>
           <button mat-raised-button
                   class="file-button"
+                  [disabled]="surveyLoading"
                   (click)="fileInput.click()">
             <mat-icon aria-label="Upload">cloud_upload</mat-icon>
             <span>Upload</span>

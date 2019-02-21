@@ -5,7 +5,7 @@ import {CreateErr, ReadErr, UpdateErr, DeleteErr} from '../errors';
 import {MongoRepository} from '../repositories/MongoRepository';
 
 export class MongoService {
-  private repo: MongoRepository;
+  private readonly repo: MongoRepository;
 
   constructor() {
     this.repo = new MongoRepository();

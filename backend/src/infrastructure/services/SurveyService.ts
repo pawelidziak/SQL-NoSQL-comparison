@@ -24,13 +24,13 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.mongoService.createMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.createMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.mysqlService.createMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.createMany(parentModels))
     });
 
     return {
@@ -47,13 +47,13 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.mongoService.readMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.readMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.mysqlService.readMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.readMany(parentModels))
     });
 
     return {
@@ -70,13 +70,13 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.mongoService.updateMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.updateMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.mysqlService.updateMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.updateMany(parentModels))
     });
 
     return {
@@ -93,13 +93,13 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.mongoService.deleteMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.deleteMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.mysqlService.deleteMany(parentModels)
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.deleteMany(parentModels))
     });
 
     return {
@@ -107,5 +107,13 @@ export class SurveyService {
       quantity: reqModel.quantity,
       dbResult: result
     };
+  }
+
+  private async calculateAverageTime(tests: number, serviceFunction: any): Promise<number> {
+    let averageTime = 0;
+    for (let i = 0; i < tests; i++) {
+      averageTime += await serviceFunction();
+    }
+    return Math.ceil(averageTime / tests);
   }
 }
