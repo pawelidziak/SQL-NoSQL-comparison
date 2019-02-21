@@ -1,5 +1,16 @@
 @import '../../../../assets/scss/variables';
 
+.survey-databases {
+  margin: $margin 0;
+
+  .col-6 {
+    &:last-child {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
 .survey-option-row {
   align-items: center;
   min-height: 50px;
@@ -27,6 +38,19 @@
 .survey-loader {
   margin-top: 100px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  min-height: 200px;
+
+  p {
+    position: absolute;
+    top: calc(50% + 40px);
+    font-size: 1.5*$font-normal;
+  }
+
+  mat-spinner {
+    position: absolute;
+    top: 50%;
+  }
 }
 

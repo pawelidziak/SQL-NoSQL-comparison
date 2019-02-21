@@ -8,6 +8,17 @@
     </div>
 
     <div class="my-card-content">
+      <div class="row survey-databases">
+        <div class="col-6 text-center">
+          <p>Survey databases: </p>
+        </div>
+        <div class="col-6">
+          <mat-chip-list>
+            <mat-chip color="accent" selected>{{databases.MongoDB}}</mat-chip>
+            <mat-chip color="primary" selected>{{databases.MySQL}}</mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
       <div class="row survey-option-row">
         <div class="col-6 text-center">
           <p>Choose how many instances will be generated: </p>
@@ -125,13 +136,18 @@
                    style="min-height: 500px"
                    animationDuration="0ms"
                    mat-align-tabs="center"
+                   id="resultTab"
                    [selectedIndex]="selectedIndex"
                    (selectedIndexChange)="selectedIndex = $event">
 
       <mat-tab *ngFor="let operation of operationTypeValues()"
+               [disabled]="surveyLoading"
                [label]="operation">
         <div *ngIf="surveyLoading"
              class="survey-loader">
+          <p>
+            {{timer}} s
+          </p>
           <mat-spinner [diameter]="150"></mat-spinner>
         </div>
         <app-survey-result *ngIf="!surveyLoading"

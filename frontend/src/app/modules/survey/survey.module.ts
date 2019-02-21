@@ -3,7 +3,7 @@ import {SurveyComponent} from './components/survey.component';
 import {surveyRouting} from './survey.routing';
 import {
   MatButtonModule,
-  MatCardModule,
+  MatCardModule, MatChipsModule,
   MatFormFieldModule, MatIconModule,
   MatInputModule,
   MatProgressSpinnerModule,
@@ -30,7 +30,8 @@ import {SurveyResultModule} from '@shared/components/survey-result/survey-result
     MatRadioModule,
     MatTabsModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   exports: [],
   providers: [

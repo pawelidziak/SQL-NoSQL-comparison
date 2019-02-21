@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SurveyService} from '../survey.service';
-import {OperationType, RequestModel, SurveyResult} from '@core/models';
+import {DbName, OperationType, RequestModel, SurveyResult} from '@core/models';
 import {Observable} from 'rxjs';
 import {FileUtils} from '@shared/utils/FileUtils';
 
@@ -11,15 +11,18 @@ import {FileUtils} from '@shared/utils/FileUtils';
 })
 export class SurveyComponent implements OnInit, OnDestroy {
   private subscriptions: any[] = [];
+  private interval: any;
   selectedIndex = 0;
   surveyLoading = false;
   operations = OperationType;
   upToSave = false;
+  databases = DbName;
+  timer = 0;
 
   req: RequestModel = {
     quantity: 100,
     simpleQuery: true,
-    testsReps: 1
+    testsReps: 10
   };
 
   results: Map<OperationType | string, SurveyResult[]> = new Map([
@@ -28,6 +31,13 @@ export class SurveyComponent implements OnInit, OnDestroy {
     [OperationType.UPDATE, []],
     [OperationType.DELETE, []],
   ]);
+
+  static scrollToResult(): void {
+    const element = document.getElementById('resultTab');
+    if (element) {
+      element.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+  }
 
   constructor(private readonly surveyService: SurveyService) {
   }
@@ -49,6 +59,8 @@ export class SurveyComponent implements OnInit, OnDestroy {
     if (this.requestInvalid()) {
       return;
     }
+    this.startTimer();
+    SurveyComponent.scrollToResult();
     this.surveyLoading = true;
     this.subscriptions.push(
       this.recognizeReq(operation).subscribe(
@@ -105,6 +117,18 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.results.set(res.operation, list);
     this.surveyLoading = false;
     this.upToSave = true;
+    this.stopTimer();
+  }
+
+  private startTimer(): void {
+    this.interval = setInterval(() => {
+      this.timer++;
+    }, 1000);
+  }
+
+  private stopTimer(): void {
+    clearInterval(this.interval);
+    this.timer = 0;
   }
 
 }
