@@ -118,7 +118,7 @@ export const MysqlEntry: QueryModel[] = [
   {
     title: 'Query as Promise',
     code: MYSQL_EXEC,
-    desc: 'Every query to MySQL is converted to new Promise. The method retrieves query as string and return new Promise.'
+    desc: 'Every query send to MySQL is converted to new Promise. The method retrieves query as string and return new Promise.'
   }
 ];
 

@@ -12,3 +12,38 @@
   padding-top: 3*$margin;
   text-align: center;
 }
+
+/**
+    Table of Contents
+ */
+.toc-container {
+  border: 1px solid $divider_color;
+  border-top: none;
+  background-color: $text-white;
+  padding: 2*$margin;
+}
+
+.toc-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start
+}
+
+.toc-header {
+  cursor: pointer;
+
+  &:hover {
+    opacity: .7;
+  }
+}
+
+.toc-link {
+  text-decoration: underline;
+  cursor: pointer;
+  color: $primary_light;
+  padding-bottom: .25*$margin;
+
+  &:hover {
+    color: $primary;
+  }
+}

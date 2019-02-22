@@ -43,6 +43,14 @@ export class InfoComponent implements OnInit {
     );
   }
 
+  scrollToElement(id): void {
+    console.log(id)
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+  }
+
   private createComponentData(): void {
     for (const db of this.dbNameValues()) {
       const allQueries = this.getQueries(db);
