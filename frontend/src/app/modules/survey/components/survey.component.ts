@@ -3,6 +3,7 @@ import {SurveyService} from '../survey.service';
 import {DbName, OperationType, RequestModel, SurveyResult} from '@core/models';
 import {Observable} from 'rxjs';
 import {FileUtils} from '@shared/utils/FileUtils';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   upToSave = false;
   databases = DbName;
   timer = 0;
+  responseError = '';
 
   req: RequestModel = {
     quantity: 100,
@@ -65,7 +67,10 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.recognizeReq(operation).subscribe(
         (res: SurveyResult) => this.addResult(res),
-        err => console.error(err)
+        (err: HttpErrorResponse) => {
+          this.responseError = err.message;
+          this.surveyLoading = false;
+        }
       )
     );
   }

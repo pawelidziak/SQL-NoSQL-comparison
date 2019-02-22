@@ -54,3 +54,14 @@
   }
 }
 
+.resp-error {
+  text-align: center;
+  padding: 200px $margin;
+
+  span {
+    padding: $margin;
+    background-color: $material-red;
+    color: $text-white;
+    border-radius: $border-radius;
+  }
+}

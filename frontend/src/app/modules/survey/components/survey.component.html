@@ -150,10 +150,13 @@
           </p>
           <mat-spinner [diameter]="150"></mat-spinner>
         </div>
-        <app-survey-result *ngIf="!surveyLoading"
+        <app-survey-result *ngIf="!surveyLoading && !responseError"
                            [result]="results.get(operation)"
                            [operation]="operation">
         </app-survey-result>
+        <div class="resp-error" *ngIf="responseError">
+          <span>{{responseError}}</span>
+        </div>
       </mat-tab>
     </mat-tab-group>
   </mat-card>
