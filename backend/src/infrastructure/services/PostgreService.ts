@@ -1,14 +1,12 @@
-import {ParentI,} from '../../core/models/ParentModel';
-import {MongoDatabase} from '../../db/mongo/MongoDatabase';
-import {Benchmark} from '../../utils/Benchmark';
-import {CreateErr, ReadErr, UpdateErr, DeleteErr} from '../errors';
-import {MongoRepository} from '../repositories/MongoRepository';
+import {PostgreRepository} from '../repositories/PostgreRepository';
+import {ParentI} from "../../core/models/ParentModel";
+import {Benchmark} from "../../utils/Benchmark";
 
-export class MongoService {
-  private readonly repo: MongoRepository;
+export class PostgreService {
+  private readonly repo: PostgreRepository;
 
   constructor() {
-    this.repo = new MongoRepository();
+    this.repo = new PostgreRepository();
   }
 
   /**
@@ -17,12 +15,11 @@ export class MongoService {
    * @param parentModels - objects to create
    */
   async createMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    // clear db TODO
     const time = new Benchmark();
 
     for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
-        .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
+      // connect to repo TODO
     }
 
     return (time.elapsed());
@@ -37,21 +34,18 @@ export class MongoService {
    * @param parentModels - objects to read
    */
   async readMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    // clear db TODO
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
-          .then(res => idArray.push(res.insertedId.toHexString()))
-          .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
+      // connect to repo TODO
     }
 
     //  then read
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
-      await this.repo.readOne(idArray[i])
-          .catch(() => new ReadErr('MongoDB READ in readMany() failed.'));
+      // connect to repo TODO
     }
 
     return (time.elapsed());
@@ -66,21 +60,18 @@ export class MongoService {
    * @param parentModels - objects to update
    */
   async updateMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    // clear db TODO
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
-        .then(res => idArray.push(res.insertedId.toHexString()))
-        .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
+      // connect to repo TODO
     }
 
     // then update
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
-      await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
-        .catch(() => new UpdateErr('Mongo read ERROR.'));
+      // connect to repo TODO
     }
 
     return (time.elapsed());
@@ -95,23 +86,21 @@ export class MongoService {
    * @param parentModels - objects to delete
    */
   async deleteMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    // clear db TODO
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
-          .then(res => idArray.push(res.insertedId.toHexString()))
-          .catch(() => new CreateErr('MongoDB CREATE in deleteMany() failed.'));
+      // connect to repo TODO
     }
 
     // then delete
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
-      await this.repo.deleteOne(idArray[i])
-        .catch(() => new DeleteErr('Mongo read ERROR.'));
+      // connect to repo TODO
     }
 
     return (time.elapsed());
   }
+
 }

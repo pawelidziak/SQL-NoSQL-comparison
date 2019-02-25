@@ -6,15 +6,18 @@ import {GenerateData} from '../../utils/GenerateData';
 
 import {MongoService} from './MongoService';
 import {MysqlService} from './MysqlService';
+import {PostgreService} from './PostgreService';
 
 
 export class SurveyService {
   private mongoService: MongoService;
   private mysqlService: MysqlService;
+  private postgreService: PostgreService;
 
   constructor() {
     this.mongoService = new MongoService();
     this.mysqlService = new MysqlService();
+    this.postgreService = new PostgreService();
   }
 
   async surveyCreate(reqModel: RequestModel) {
@@ -31,6 +34,12 @@ export class SurveyService {
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.createMany(parentModels))
+    });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(reqModel.testsReps, () => this.postgreService.createMany(parentModels))
     });
 
     return {
