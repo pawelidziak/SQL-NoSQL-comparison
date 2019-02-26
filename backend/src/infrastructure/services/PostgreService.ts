@@ -19,7 +19,8 @@ export class PostgreService {
     const time = new Benchmark();
 
     for (let i = 0; i < parentModels.length; i++) {
-      // connect to repo TODO
+      await this.repo.createOne(parentModels[i])
+        .catch((err) => console.log(err));
     }
 
     return (time.elapsed());
@@ -39,7 +40,9 @@ export class PostgreService {
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
-      // connect to repo TODO
+      await this.repo.createOne(parentModels[i])
+        .then(data => idArray.push(data.parentid))
+        .catch((err) => console.log(err));
     }
 
     //  then read

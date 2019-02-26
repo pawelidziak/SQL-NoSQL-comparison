@@ -9,7 +9,8 @@ export class PostgreRepository {
   }
 
   async createOne(obj: ParentI) {
-    // TODO
+    const sql = `INSERT INTO parents (name) VALUES ('${obj.name}') RETURNING parentId`;
+    return await this.postgreDatabase.getConnection().one(sql);
   }
 
   async readOne(id: string) {

@@ -12,9 +12,9 @@ export class MysqlQueries {
    DROP TABLE IF EXISTS ${MysqlQueries.PARENTS_TABLE}; 
    
    CREATE TABLE ${MysqlQueries.PARENTS_TABLE} (
-      parentId int NOT NULL AUTO_INCREMENT,
-      name varchar(255),
-      PRIMARY KEY (parentId)
+      parentId      int NOT NULL AUTO_INCREMENT,
+      name          varchar(255),
+      PRIMARY KEY   (parentId)
    );
    
 
