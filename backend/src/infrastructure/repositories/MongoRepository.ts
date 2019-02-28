@@ -11,29 +11,26 @@ export class MongoRepository {
   }
 
   async createOne(obj: ParentI) {
-    return await this.mongoDatabase.getDatabase()
-        .collection('parents')
-        .insertOne(Object.assign({}, obj));
+    return await this.mongoDatabase.exec().collection('parents').insertOne(
+        Object.assign({}, obj));
   }
 
   async readOne(id: string) {
-    return await this.mongoDatabase.getDatabase().collection('parents').findOne(
+    return await this.mongoDatabase.exec().collection('parents').findOne(
         {'_id': new ObjectID(id)});
   }
 
   async readAll() {
-    return await this.mongoDatabase.getDatabase().collection('parents').find();
+    return await this.mongoDatabase.exec().collection('parents').find();
   }
 
   async updateOne(id: string, newValue: string) {
-    return await this.mongoDatabase.getDatabase()
-        .collection('parents')
-        .updateOne({'_id': new ObjectID(id)}, {$set: {name: newValue}});
+    return await this.mongoDatabase.exec().collection('parents').updateOne(
+        {'_id': new ObjectID(id)}, {$set: {name: newValue}});
   }
 
   async deleteOne(id: string) {
-    return await this.mongoDatabase.getDatabase()
-        .collection('parents')
-        .deleteOne({'_id': new ObjectID(id)});
+    return await this.mongoDatabase.exec().collection('parents').deleteOne(
+        {'_id': new ObjectID(id)});
   }
 }

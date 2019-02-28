@@ -51,6 +51,7 @@ export class MysqlDatabase implements DatabaseModel {
       await this._con.connect();
       await this.initDb();
     } catch (e) {
+      console.error(e);
       throw new DatabaseConnectionErr('MySQL connection failed.');
     }
   }
@@ -63,7 +64,7 @@ export class MysqlDatabase implements DatabaseModel {
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
     } catch (e) {
       console.error(e);
-      throw new ClearDatabaseErr(`MySQL clear database failed.`);
+      throw new ClearDatabaseErr(`MySQL init database failed.`);
     }
   }
 

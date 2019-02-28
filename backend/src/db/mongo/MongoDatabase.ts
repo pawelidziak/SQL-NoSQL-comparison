@@ -1,21 +1,26 @@
 import {Db, MongoClient} from 'mongodb';
+
+import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
 import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {DatabaseModel} from '../DatabaseModel';
+
 import {MONGODB_CONFIG} from './Mongodb.config';
+import {MongoQueries} from './MongoQueries';
 
 /**
  *  Class with ONLY con methods
  */
-export class MongoDatabase {
+export class MongoDatabase implements DatabaseModel {
   private static instance: MongoDatabase;
+  private _con: MongoClient|any;
 
-  private readonly DB_URL = `mongodb://${MONGODB_CONFIG.host}:${
+  private readonly config = `mongodb://${MONGODB_CONFIG.host}:${
       MONGODB_CONFIG.port}/${MONGODB_CONFIG.db_name}`;
-  private _database: MongoClient|null;
-  readonly PARENTS_COL = 'parents';
 
   private constructor() {
-    this._database = null;
-    this.connect();
+    this.connect()
+        .then(() => console.log(`MongoDB CONNECTED.`))
+        .catch(err => console.error(err));
   }
 
   static getInstance(): MongoDatabase {
@@ -28,21 +33,27 @@ export class MongoDatabase {
   /**
    *    DATABASE METHODS
    */
-  connect(): void {
-    if (!this._database) {
-      MongoClient.connect(this.DB_URL, {useNewUrlParser: true}, (err, db) => {
-        if (err) throw new DatabaseConnectionErr('MongoDB connection failed.');
-        this._database = db;
-        console.log('Mongo CONNECTED');
-        db.db().dropDatabase().then(() => {
-          db.db().createCollection(this.PARENTS_COL);
-        });
-      });
+  async connect(): Promise<any> {
+    try {
+      this._con =
+          await MongoClient.connect(this.config, {useNewUrlParser: true});
+    } catch (e) {
+      console.error(e);
+      throw new DatabaseConnectionErr('MongoDB connection failed.');
     }
   }
 
-  getDatabase(): Db {
-    // @ts-ignore
-    return this._database.db();
+  async clearDB(): Promise<any> {
+    try {
+      await this._con.db().dropDatabase();
+      await this._con.db().createCollection(MongoQueries.PARENTS_TABLE);
+    } catch (e) {
+      console.error(e);
+      throw new ClearDatabaseErr(`MongoDB clear database failed.`);
+    }
+  }
+
+  exec(): Db {
+    return this._con.db();
   }
 }

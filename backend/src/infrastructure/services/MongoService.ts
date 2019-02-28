@@ -17,7 +17,7 @@ export class MongoService {
    * @param parentModels - objects to create
    */
   async createMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    await MongoDatabase.getInstance().clearDB();
     const time = new Benchmark();
 
     for (let i = 0; i < parentModels.length; i++) {
@@ -37,7 +37,7 @@ export class MongoService {
    * @param parentModels - objects to read
    */
   async readMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
@@ -66,7 +66,7 @@ export class MongoService {
    * @param parentModels - objects to update
    */
   async updateMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
@@ -95,7 +95,7 @@ export class MongoService {
    * @param parentModels - objects to delete
    */
   async deleteMany(parentModels: ParentI[]) {
-    await MongoDatabase.getInstance().getDatabase().dropDatabase();
+    await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
