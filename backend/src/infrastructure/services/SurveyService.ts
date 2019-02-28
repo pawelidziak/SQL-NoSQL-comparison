@@ -1,4 +1,4 @@
-import {DbName, DbResult} from '../../core/models/DbResult';
+import {DbResult} from '../dto/DbResult';
 import {OperationType} from '../../core/models/OperationType';
 import {ParentI} from '../../core/models/ParentModel';
 import {RequestModel} from '../../core/models/RequestModel';
@@ -7,6 +7,7 @@ import {GenerateData} from '../../utils/GenerateData';
 import {MongoService} from './MongoService';
 import {MysqlService} from './MysqlService';
 import {PostgreService} from './PostgreService';
+import {DbName} from "../../core/models/DbName";
 
 
 export class SurveyService {

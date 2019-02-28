@@ -2,7 +2,7 @@ import {Request, Response, Router} from 'express';
 import {NextFunction} from 'express-serve-static-core';
 
 import {RequestModel} from '../../core/models/RequestModel';
-import {SurveyResult} from '../../core/models/SurveyResult';
+import {SurveyResult} from '../../infrastructure/dto/SurveyResult';
 import {SurveyService} from '../../infrastructure/services/SurveyService';
 
 import {AppRoutes} from './AppRoutes';
