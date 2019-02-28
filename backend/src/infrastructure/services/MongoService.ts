@@ -1,7 +1,7 @@
 import {ParentI,} from '../../core/models/ParentModel';
 import {MongoDatabase} from '../../db/mongo/MongoDatabase';
 import {Benchmark} from '../../utils/Benchmark';
-import {CreateErr, ReadErr, UpdateErr, DeleteErr} from '../errors';
+import {CreateErr, DeleteErr, ReadErr, UpdateErr} from '../errors';
 import {MongoRepository} from '../repositories/MongoRepository';
 
 export class MongoService {
@@ -22,7 +22,7 @@ export class MongoService {
 
     for (let i = 0; i < parentModels.length; i++) {
       await this.repo.createOne(parentModels[i])
-        .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
+          .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
     }
 
     return (time.elapsed());
@@ -72,15 +72,15 @@ export class MongoService {
     // create first
     for (let i = 0; i < parentModels.length; i++) {
       await this.repo.createOne(parentModels[i])
-        .then(res => idArray.push(res.insertedId.toHexString()))
-        .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
+          .then(res => idArray.push(res.insertedId.toHexString()))
+          .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
     }
 
     // then update
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
       await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
-        .catch(() => new UpdateErr('Mongo read ERROR.'));
+          .catch(() => new UpdateErr('Mongo read ERROR.'));
     }
 
     return (time.elapsed());
@@ -109,7 +109,7 @@ export class MongoService {
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
       await this.repo.deleteOne(idArray[i])
-        .catch(() => new DeleteErr('Mongo read ERROR.'));
+          .catch(() => new DeleteErr('Mongo read ERROR.'));
     }
 
     return (time.elapsed());

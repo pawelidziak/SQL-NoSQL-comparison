@@ -42,7 +42,8 @@ export class MysqlRepository {
   }
 
   async updateOneParent(id: string, newValue: string): Promise<any> {
-    const sql = `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
+    const sql =
+        `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
   }
 

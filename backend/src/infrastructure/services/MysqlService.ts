@@ -1,8 +1,8 @@
 import {ParentI} from '../../core/models/ParentModel';
 import {MysqlDatabase} from '../../db/mysql/MysqlDatabase';
 import {Benchmark} from '../../utils/Benchmark';
+import {CreateErr, DeleteErr, ReadErr, UpdateErr} from '../errors';
 import {MysqlRepository} from '../repositories/MysqlRepository';
-import {CreateErr, ReadErr, UpdateErr, DeleteErr} from '../errors';
 
 export class MysqlService {
   private repo: MysqlRepository;
@@ -17,7 +17,7 @@ export class MysqlService {
    * @param parentModels
    */
   async createMany(parentModels: ParentI[]) {
-    await MysqlDatabase.getInstance().clearDbAndCreateTables();
+    await MysqlDatabase.getInstance().clearDB();
     const time = new Benchmark();
 
     for (let i = 0; i < parentModels.length; i++) {
@@ -37,14 +37,14 @@ export class MysqlService {
    * @param parentModels - objects to read
    */
   async readMany(parentModels: ParentI[]) {
-    await MysqlDatabase.getInstance().clearDbAndCreateTables();
+    await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
       await this.repo.createOneParent(parentModels[i])
           .then(res => idArray.push(res.insertId))
-          .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
+          .catch(() => new CreateErr('MySQL CREATE in readMany() failed.'));
     }
 
     // then read
@@ -67,21 +67,21 @@ export class MysqlService {
    * @param parentModels - objects to update
    */
   async updateMany(parentModels: ParentI[]) {
-    await MysqlDatabase.getInstance().clearDbAndCreateTables();
+    await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
       await this.repo.createOneParent(parentModels[i])
-        .then(res => idArray.push(res.insertId))
-        .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
+          .then(res => idArray.push(res.insertId))
+          .catch(() => new CreateErr('MySQL CREATE in updateMany() failed.'));
     }
 
     // then update
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
       await this.repo.updateOneParent(idArray[i], `Updated ${i + 1}`)
-        .catch(() => new UpdateErr('Mongo read ERROR.'));
+          .catch(() => new UpdateErr('MySQL UPDATE in updateMany() failed.'));
     }
 
     return (time.elapsed());
@@ -96,21 +96,21 @@ export class MysqlService {
    * @param parentModels - objects to delete
    */
   async deleteMany(parentModels: ParentI[]) {
-    await MysqlDatabase.getInstance().clearDbAndCreateTables();
+    await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
     for (let i = 0; i < parentModels.length; i++) {
       await this.repo.createOneParent(parentModels[i])
-        .then(res => idArray.push(res.insertId))
-        .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
+          .then(res => idArray.push(res.insertId))
+          .catch(() => new CreateErr('MySQL CREATE in deleteMany() failed.'));
     }
 
     // then delete
     const time = new Benchmark();
     for (let i = 0; i < idArray.length; i++) {
       await this.repo.deleteOneParents(idArray[i])
-        .catch(() => new DeleteErr('Mongo read ERROR.'));
+          .catch(() => new DeleteErr('MySQL DELETE in deleteMany() failed.'));
     }
 
     return (time.elapsed());

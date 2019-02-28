@@ -1,5 +1,9 @@
 export interface DatabaseModel {
-  connect(): void;
-  isConnected(): boolean;
-  disconnect(): void;
+  connect(): Promise<any>;
+
+  initDb(): Promise<any>;
+
+  clearDB(): Promise<any>;
+
+  exec(sql: string): Promise<any>;
 }

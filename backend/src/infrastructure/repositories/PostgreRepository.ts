@@ -1,5 +1,5 @@
-import {PostgreDatabase} from "../../db/postgre/PostgreDatabase";
-import {ParentI} from "../../core/models/ParentModel";
+import {ParentI} from '../../core/models/ParentModel';
+import {PostgreDatabase} from '../../db/postgre/PostgreDatabase';
 
 export class PostgreRepository {
   private readonly postgreDatabase: PostgreDatabase;
@@ -9,12 +9,14 @@ export class PostgreRepository {
   }
 
   async createOne(obj: ParentI) {
-    const sql = `INSERT INTO parents (name) VALUES ('${obj.name}') RETURNING parentId`;
-    return await this.postgreDatabase.getConnection().one(sql);
+    const sql =
+        `INSERT INTO parents (name) VALUES ('${obj.name}') RETURNING parentId`;
+    return await this.postgreDatabase.exec(sql);
   }
 
   async readOne(id: string) {
-    // TODO
+    const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
+    return await this.postgreDatabase.exec(sql);
   }
 
   async readAll() {
@@ -22,10 +24,13 @@ export class PostgreRepository {
   }
 
   async updateOne(id: string, newValue: string) {
-    // TODO
+    const sql =
+        `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
+    return await this.postgreDatabase.exec(sql);
   }
 
   async deleteOne(id: string) {
-    // TODO
+    const sql = `DELETE FROM parents WHERE parentId = ${id}`;
+    return await this.postgreDatabase.exec(sql);
   }
 }

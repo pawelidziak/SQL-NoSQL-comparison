@@ -1,26 +1,31 @@
 import * as pgPromise from 'pg-promise';
 import {IDatabase, IMain} from 'pg-promise';
-import {PostgreQueries} from "./PostgreQueries";
-import {POSTGRE_CONFIG} from "./Postgre.config";
-import {DatabaseConnectionErr} from "../../infrastructure/errors/DatabaseConnectionErr";
 
-export class PostgreDatabase {
+import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
+import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {DatabaseModel} from '../DatabaseModel';
+
+import {POSTGRE_CONFIG} from './Postgre.config';
+import {PostgreQueries} from './PostgreQueries';
+
+export class PostgreDatabase implements DatabaseModel {
   private static instance: PostgreDatabase;
   private _con: IDatabase<any>;
   private pgp: IMain = pgPromise();
+
   private config = {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'root123',
-    database: 'postgres'
+    host: POSTGRE_CONFIG.host,
+    port: POSTGRE_CONFIG.port,
+    user: POSTGRE_CONFIG.user,
+    password: POSTGRE_CONFIG.password,
+    database: 'postgres'  // default db
   };
 
   private constructor() {
     this._con = this.pgp(this.config);
     this.connect()
-      .then(() => console.log('PostgreSQL CONNECTED.'))
-      .catch(err => console.error(err));
+        .then(() => console.log('PostgreSQL CONNECTED.'))
+        .catch(err => console.error(err));
   }
 
   static getInstance(): PostgreDatabase {
@@ -30,37 +35,47 @@ export class PostgreDatabase {
     return PostgreDatabase.instance;
   }
 
-  getConnection(): IDatabase<any> {
-    return this._con;
-  }
-
   /**
    *    DATABASE METHODS
-   */
-
-  /**
-   * Method first try to connect to default database.
-   * Then drop (if exists) db with given name and creates new tables.
    */
   async connect(): Promise<void> {
     try {
       await this._con.connect();
-      await this._con.none(PostgreQueries.POSTGRE_DROP_DB);
-      await this._con.none(PostgreQueries.POSTGRE_CREATE_DB);
-      await this.switchToDb();
-      await this._con.none(PostgreQueries.POSTGRE_CREATE_TABLES);
+      await this.initDb();
     } catch (e) {
+      console.error(e);
       throw new DatabaseConnectionErr('PostgreSQL connection failed.');
     }
   }
 
-  /**
-   * Method switches to database from config (given name)
-   */
-  private async switchToDb(): Promise<void> {
+  async initDb(): Promise<any> {
+    try {
+      await this.exec(PostgreQueries.POSTGRE_DROP_DB);
+      await this.exec(PostgreQueries.POSTGRE_CREATE_DB);
+      await this.switchDb();
+      await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES);
+    } catch (e) {
+      console.error(e);
+      throw new ClearDatabaseErr('PostgreSQL clear database failed.');
+    }
+  }
+
+  async clearDB(): Promise<any> {
+    try {
+      await this.exec(PostgreQueries.POSTGRE_DROP_TABLES);
+      await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES);
+    } catch (e) {
+      throw new ClearDatabaseErr(`MySQL clear database failed.`);
+    }
+  }
+
+  async switchDb(): Promise<any> {
     this.config.database = POSTGRE_CONFIG.db_name;
     this._con = this.pgp(this.config);
     await this._con.connect();
   }
 
+  async exec(sql: string): Promise<any> {
+    return this._con.query(sql);
+  }
 }

@@ -27,19 +27,23 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.createMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mongoService.createMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.createMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mysqlService.createMany(parentModels))
     });
 
     // PostgreSQL
     result.push({
       dbName: DbName.PostgreSQL,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.postgreService.createMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.postgreService.createMany(parentModels))
     });
 
     return {
@@ -56,13 +60,22 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.readMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mongoService.readMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.readMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mysqlService.readMany(parentModels))
+    });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.postgreService.readMany(parentModels))
     });
 
     return {
@@ -79,13 +92,23 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.updateMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mongoService.updateMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.updateMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mysqlService.updateMany(parentModels))
+    });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.postgreService.updateMany(parentModels))
     });
 
     return {
@@ -102,13 +125,23 @@ export class SurveyService {
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mongoService.deleteMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mongoService.deleteMany(parentModels))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
-      time: await this.calculateAverageTime(reqModel.testsReps, () => this.mysqlService.deleteMany(parentModels))
+      time: await this.calculateAverageTime(
+          reqModel.testsReps, () => this.mysqlService.deleteMany(parentModels))
+    });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.postgreService.deleteMany(parentModels))
     });
 
     return {
@@ -118,7 +151,8 @@ export class SurveyService {
     };
   }
 
-  private async calculateAverageTime(tests: number, serviceFunction: any): Promise<number> {
+  private async calculateAverageTime(tests: number, serviceFunction: any):
+      Promise<number> {
     let averageTime = 0;
     for (let i = 0; i < tests; i++) {
       averageTime += await serviceFunction();

@@ -1,6 +1,11 @@
 import * as mysql from 'mysql';
 import {Connection} from 'mysql';
+import {ConnectionConfig} from 'mysql';
+
+import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
 import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {DatabaseModel} from '../DatabaseModel';
+
 import {MYSQL_CONFIG} from './Mysql.config';
 import {MysqlQueries} from './MysqlQueries';
 
@@ -12,24 +17,23 @@ import {MysqlQueries} from './MysqlQueries';
  * 'YourPassword'
  *  https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server
  */
-export class MysqlDatabase {
+export class MysqlDatabase implements DatabaseModel {
   private static instance: MysqlDatabase;
   private readonly _con: Connection;
 
-  /**
-   * 1. Create con to server
-   * 2. Connect to server
-   * 3. If database exist drop it
-   * 4. Create new database
-   */
-  private constructor() {
-    this._con = this.createConnection();
-    this.connect();
-    this.clearDbAndCreateTables();
-  }
+  private config: ConnectionConfig = {
+    host: MYSQL_CONFIG.host,
+    user: MYSQL_CONFIG.user,
+    port: MYSQL_CONFIG.port,
+    password: MYSQL_CONFIG.password,
+    multipleStatements: true
+  };
 
-  getConnection(): Connection {
-    return this._con;
+  private constructor() {
+    this._con = mysql.createConnection(this.config);
+    this.connect()
+        .then(() => console.log(`MySQL CONNECTED.`))
+        .catch(err => console.error(err));
   }
 
   static getInstance(): MysqlDatabase {
@@ -42,36 +46,40 @@ export class MysqlDatabase {
   /**
    *    DATABASE METHODS
    */
-  private createConnection(): Connection {
-    return mysql.createConnection({
-      host: MYSQL_CONFIG.host,
-      user: MYSQL_CONFIG.user,
-      password: MYSQL_CONFIG.password,
-      multipleStatements: true
-    });
+  async connect(): Promise<void> {
+    try {
+      await this._con.connect();
+      await this.initDb();
+    } catch (e) {
+      throw new DatabaseConnectionErr('MySQL connection failed.');
+    }
   }
 
-  private connect(): void {
-    this._con.connect((err) => {
-      if (err) throw new DatabaseConnectionErr('MySQL connection failed.');
-      console.log('MySQL CONNECTED');
-    });
+  async initDb(): Promise<any> {
+    try {
+      await this.exec(MysqlQueries.MYSQL_DROP_DB);
+      await this.exec(MysqlQueries.MYSQL_CREATE_DB);
+      await this.exec(MysqlQueries.MYSQL_USE_DB);
+      await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
+    } catch (e) {
+      console.error(e);
+      throw new ClearDatabaseErr(`MySQL clear database failed.`);
+    }
   }
 
-  /**
-   * Method first check if db exists. If yes -> drop database. Then it create
-   * new db
-   */
-  clearDbAndCreateTables() {
-    this._con.query(MysqlQueries.MYSQL_INIT, (err1) => {
-      if (err1) throw err1;
-      this._con.config.database = MYSQL_CONFIG.db_name;
-    });
+  async clearDB(): Promise<any> {
+    try {
+      await this.exec(MysqlQueries.MYSQL_DROP_TABLES);
+      await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
+    } catch (e) {
+      console.error(e);
+      throw new ClearDatabaseErr(`MySQL clear database failed.`);
+    }
   }
 
-  exec(sql: string): Promise<any> {
+  async exec(sql: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._con.query(sql, (err, res) => {
+      this._con.query(sql, (err: any, res: any) => {
         if (err) reject(err);
         resolve(res);
       });

@@ -12,13 +12,13 @@ export class MongoRepository {
 
   async createOne(obj: ParentI) {
     return await this.mongoDatabase.getDatabase()
-      .collection('parents')
-      .insertOne(Object.assign({}, obj));
+        .collection('parents')
+        .insertOne(Object.assign({}, obj));
   }
 
   async readOne(id: string) {
     return await this.mongoDatabase.getDatabase().collection('parents').findOne(
-      {'_id': new ObjectID(id)});
+        {'_id': new ObjectID(id)});
   }
 
   async readAll() {
@@ -27,13 +27,13 @@ export class MongoRepository {
 
   async updateOne(id: string, newValue: string) {
     return await this.mongoDatabase.getDatabase()
-      .collection('parents')
-      .updateOne({'_id': new ObjectID(id)}, {$set: {name: newValue}});
+        .collection('parents')
+        .updateOne({'_id': new ObjectID(id)}, {$set: {name: newValue}});
   }
 
   async deleteOne(id: string) {
     return await this.mongoDatabase.getDatabase()
-      .collection('parents')
-      .deleteOne({'_id': new ObjectID(id)});
+        .collection('parents')
+        .deleteOne({'_id': new ObjectID(id)});
   }
 }
