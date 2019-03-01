@@ -1,7 +1,6 @@
 import {Db, MongoClient} from 'mongodb';
 
-import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
-import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {ClearDatabaseErr, DatabaseConnectionErr} from '../../infrastructure/errors';
 import {DatabaseModel} from '../DatabaseModel';
 
 import {MONGODB_CONFIG} from './Mongodb.config';

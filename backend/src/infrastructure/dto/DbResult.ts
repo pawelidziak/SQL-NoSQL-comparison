@@ -1,7 +1,6 @@
-import {DbName} from "../../core/models/DbName";
+import {DbName} from '../../core/models/DbName';
 
 export interface DbResult {
   dbName: DbName;
   time: number;
 }
-

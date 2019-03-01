@@ -1,24 +1,24 @@
-import {DbResult} from '../dto/DbResult';
+import {DbName} from '../../core/models/DbName';
 import {OperationType} from '../../core/models/OperationType';
 import {ParentI} from '../../core/models/ParentModel';
 import {RequestModel} from '../../core/models/RequestModel';
 import {GenerateData} from '../../utils/GenerateData';
+import {DbResult} from '../dto/DbResult';
 
-import {MongoService} from './MongoService';
-import {MysqlService} from './MysqlService';
-import {PostgreService} from './PostgreService';
-import {DbName} from "../../core/models/DbName";
+import {CassandraService, MongoService, MysqlService, PostgreService} from './index';
 
 
 export class SurveyService {
   private mongoService: MongoService;
   private mysqlService: MysqlService;
   private postgreService: PostgreService;
+  private cassandraService: CassandraService;
 
   constructor() {
     this.mongoService = new MongoService();
     this.mysqlService = new MysqlService();
     this.postgreService = new PostgreService();
+    this.cassandraService = new CassandraService();
   }
 
   async surveyCreate(reqModel: RequestModel) {
@@ -45,6 +45,14 @@ export class SurveyService {
       time: await this.calculateAverageTime(
           reqModel.testsReps,
           () => this.postgreService.createMany(parentModels))
+    });
+
+    // Cassandra
+    result.push({
+      dbName: DbName.Cassandra,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.cassandraService.createMany(parentModels))
     });
 
     return {
@@ -77,6 +85,14 @@ export class SurveyService {
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
           reqModel.testsReps, () => this.postgreService.readMany(parentModels))
+    });
+
+    // Cassandra
+    result.push({
+      dbName: DbName.Cassandra,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.cassandraService.readMany(parentModels))
     });
 
     return {
@@ -112,6 +128,14 @@ export class SurveyService {
           () => this.postgreService.updateMany(parentModels))
     });
 
+    // Cassandra
+    result.push({
+      dbName: DbName.Cassandra,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.cassandraService.updateMany(parentModels))
+    });
+
     return {
       operation: OperationType.UPDATE,
       quantity: reqModel.quantity,
@@ -143,6 +167,14 @@ export class SurveyService {
       time: await this.calculateAverageTime(
           reqModel.testsReps,
           () => this.postgreService.deleteMany(parentModels))
+    });
+
+    // Cassandra
+    result.push({
+      dbName: DbName.Cassandra,
+      time: await this.calculateAverageTime(
+          reqModel.testsReps,
+          () => this.cassandraService.deleteMany(parentModels))
     });
 
     return {

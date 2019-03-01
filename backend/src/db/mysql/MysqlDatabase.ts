@@ -2,8 +2,7 @@ import * as mysql from 'mysql';
 import {Connection} from 'mysql';
 import {ConnectionConfig} from 'mysql';
 
-import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
-import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {ClearDatabaseErr, DatabaseConnectionErr} from '../../infrastructure/errors';
 import {DatabaseModel} from '../DatabaseModel';
 
 import {MYSQL_CONFIG} from './Mysql.config';

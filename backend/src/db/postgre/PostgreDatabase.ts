@@ -1,8 +1,7 @@
 import * as pgPromise from 'pg-promise';
 import {IDatabase, IMain} from 'pg-promise';
 
-import {ClearDatabaseErr} from '../../infrastructure/errors/ClearDatabaseErr';
-import {DatabaseConnectionErr} from '../../infrastructure/errors/DatabaseConnectionErr';
+import {ClearDatabaseErr, DatabaseConnectionErr} from '../../infrastructure/errors';
 import {DatabaseModel} from '../DatabaseModel';
 
 import {POSTGRE_CONFIG} from './Postgre.config';
