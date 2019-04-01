@@ -163,9 +163,7 @@
       <mat-tab *ngFor="let operation of operationTypeValues()"
                [disabled]="surveyLoading"
                [label]="operation">
-        <div>
-          <p>Database Size: {{req.dbSize}}</p>
-        </div>
+        <div class="db-size" *ngIf="!surveyLoading && !responseError">Database Size: {{req.dbSize}}</div>
         <div *ngIf="surveyLoading"
              class="survey-loader">
           <p>

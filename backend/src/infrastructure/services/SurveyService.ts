@@ -7,7 +7,6 @@ import {DbResult} from '../dto/DbResult';
 
 import {CassandraService, MongoService, MysqlService, PostgreService} from './index';
 import {SurveyResult} from "../dto/SurveyResult";
-import {MongoDatabase} from "../../db/mongo/MongoDatabase";
 
 
 export class SurveyService {
