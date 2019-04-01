@@ -5,5 +5,5 @@ export interface DatabaseModel {
 
   clearDB(): Promise<any>;
 
-  exec(sql?: string): Promise<any>|any;
+  exec(commend?: string): Promise<any>|any;
 }

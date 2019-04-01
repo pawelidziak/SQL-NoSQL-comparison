@@ -8,14 +8,15 @@ export class CassandraRepository {
     this.cassandraDatabase = CassandraDatabase.getInstance();
   }
 
-  async createOne(obj: ParentI) {
-    const sql = `TODO`;
-    return await this.cassandraDatabase.exec(sql);
+  async createOne(obj: ParentI): Promise<any> {
+    const csql = `INSERT INTO parents (parentId, name) VALUES ('${obj.parentId}', '${obj.name}')`;
+    return await this.cassandraDatabase.exec(csql);
+
   }
 
   async readOne(id: string) {
-    const sql = `TODO`;
-    return await this.cassandraDatabase.exec(sql);
+    const csql = `SELECT * FROM parents WHERE parentId = '${id}'`;
+    return await this.cassandraDatabase.exec(csql);
   }
 
   async readAll() {
@@ -23,12 +24,12 @@ export class CassandraRepository {
   }
 
   async updateOne(id: string, newValue: string) {
-    const sql = `TODO`;
-    return await this.cassandraDatabase.exec(sql);
+    const csql = `UPDATE parents SET name = '${newValue}' WHERE parentId = '${id}'`;
+    return await this.cassandraDatabase.exec(csql);
   }
 
   async deleteOne(id: string) {
-    const sql = `TODO`;
-    return await this.cassandraDatabase.exec(sql);
+    const csql = `DELETE FROM parents WHERE parentId = '${id}'`;
+    return await this.cassandraDatabase.exec(csql);
   }
 }

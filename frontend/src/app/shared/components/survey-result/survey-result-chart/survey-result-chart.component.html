@@ -1,6 +1,7 @@
 <div style="display: block" *ngIf="showChart">
   <canvas baseChart
           [datasets]="chartData"
+          [colors]="myColors"
           [labels]="chartLabels"
           [options]="chartOptions"
           legend="true"

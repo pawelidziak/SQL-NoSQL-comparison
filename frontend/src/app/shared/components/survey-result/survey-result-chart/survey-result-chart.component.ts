@@ -17,6 +17,32 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
   chartLabels = [];
   chartData: BarData[] = [];
   showChart = true;
+  // myColors = [
+  //   {
+  //     backgroundColor: 'rgba(103, 58, 183, .1)',
+  //     borderColor: 'rgb(103, 58, 183)',
+  //     pointBackgroundColor: 'rgb(103, 58, 183)',
+  //     pointBorderColor: '#fff',
+  //     pointHoverBackgroundColor: '#fff',
+  //     pointHoverBorderColor: 'rgba(103, 58, 183, .8)'
+  //   },
+  //   // ...colors for additional data sets
+  // ];
+  myColors = [
+    {
+      backgroundColor: '#2196f3',
+    },
+    {
+      backgroundColor: '#673ab7',
+    },
+    {
+      backgroundColor: '#ff9800',
+    },
+    {
+      backgroundColor: '#cddc39',
+    },
+    // ...colors for additional data sets
+  ];
 
   constructor() {
   }

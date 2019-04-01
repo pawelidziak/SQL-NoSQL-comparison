@@ -14,18 +14,23 @@ export class PostgreService {
   /**
    * 1. Clear database
    * 2. Add objects in loop
-   * @param parentModels - objects to create
+   * @param allInstances
+   * @param quantity
    */
-  async createMany(parentModels: ParentI[]) {
+  async createMany(allInstances: ParentI[], quantity: number) {
     await PostgreDatabase.getInstance().clearDB();
-    const time = new Benchmark();
 
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
-          .catch(
-              () => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+    // create first
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOne(allInstances[i])
+          .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
     }
 
+    const time = new Benchmark();
+    for (let i = 0; i < quantity; i++) {
+      await this.repo.createOne(allInstances[i])
+        .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+    }
     return (time.elapsed());
   }
 
@@ -35,23 +40,23 @@ export class PostgreService {
    * 3. Save their id's
    * 4. Start timer and read all objects
    * 5. Stop timer
-   * @param parentModels - objects to read
+   * @param allInstances
+   * @param quantity
    */
-  async readMany(parentModels: ParentI[]) {
+  async readMany(allInstances: ParentI[], quantity: number) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOne(allInstances[i])
           .then(data => idArray.push(data.parentid))
-          .catch(
-              () => new CreateErr('PostgreSQL CREATE in readMany() failed.'));
+          .catch(() => new CreateErr('PostgreSQL CREATE in readMany() failed.'));
     }
 
     //  then read
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.readOne(idArray[i])
           .catch(() => new ReadErr('PostgreSQL READ in readMany() failed.'));
     }
@@ -65,15 +70,16 @@ export class PostgreService {
    * 3. Save their id's
    * 4. Start timer and update all objects
    * 5. Stop timer
-   * @param parentModels - objects to update
+   * @param allInstances
+   * @param quantity
    */
-  async updateMany(parentModels: ParentI[]) {
+  async updateMany(allInstances: ParentI[], quantity: number) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOne(allInstances[i])
           .then(data => idArray.push(data.parentid))
           .catch(
               () => new CreateErr('PostgreSQL CREATE in updateMany() failed.'));
@@ -81,7 +87,7 @@ export class PostgreService {
 
     // then update
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
           .catch(
               () => new UpdateErr('PostgreSQL UPDATE in updateMany() failed.'));
@@ -96,15 +102,16 @@ export class PostgreService {
    * 3. Save their id's
    * 4. Start timer and delete all objects
    * 5. Stop timer
-   * @param parentModels - objects to delete
+   * @param allInstances
+   * @param quantity
    */
-  async deleteMany(parentModels: ParentI[]) {
+  async deleteMany(allInstances: ParentI[], quantity: number) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOne(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOne(allInstances[i])
           .then(data => idArray.push(data.parentid))
           .catch(
               () => new CreateErr('PostgreSQL CREATE in deleteMany() failed.'));
@@ -112,7 +119,7 @@ export class PostgreService {
 
     // then delete
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.deleteOne(idArray[i])
           .catch(
               () => new DeleteErr('PostgreSQL DELETE in deleteMany() failed.'));

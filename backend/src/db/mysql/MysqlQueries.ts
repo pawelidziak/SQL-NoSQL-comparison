@@ -7,8 +7,7 @@ export class MysqlQueries {
   static MYSQL_DROP_DB = `DROP DATABASE IF EXISTS ${MYSQL_CONFIG.db_name}`;
   static MYSQL_CREATE_DB = `CREATE DATABASE ${MYSQL_CONFIG.db_name}`;
   static MYSQL_USE_DB = `USE ${MYSQL_CONFIG.db_name}`;
-  static MYSQL_DROP_TABLES =
-      `DROP TABLE IF EXISTS ${MysqlQueries.CHILDREN_TABLE};
+  static MYSQL_DROP_TABLES = `DROP TABLE IF EXISTS ${MysqlQueries.CHILDREN_TABLE};
    DROP TABLE IF EXISTS ${MysqlQueries.PARENTS_TABLE};
    `;
   static MYSQL_CREATE_TABLES = `CREATE TABLE ${MysqlQueries.PARENTS_TABLE} (

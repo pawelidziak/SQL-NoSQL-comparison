@@ -14,15 +14,22 @@ export class MysqlService {
   /**
    * 1. Clear database
    * 2. Add children and measure time
-   * @param parentModels
+   * @param allInstances
+   * @param quantity
    */
-  async createMany(parentModels: ParentI[]) {
+  async createMany(allInstances: ParentI[], quantity: number) {
     await MysqlDatabase.getInstance().clearDB();
     const time = new Benchmark();
 
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOneParent(parentModels[i])
-          .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
+    // create first
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOneParent(allInstances[i])
+        .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
+    }
+
+    for (let i = 0; i < quantity; i++) {
+      await this.repo.createOneParent(allInstances[i])
+        .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
     }
 
     return (time.elapsed());
@@ -34,22 +41,23 @@ export class MysqlService {
    * 3. Save their id's
    * 4. Start timer and read all objects
    * 5. Stop timer
-   * @param parentModels - objects to read
+   * @param allInstances
+   * @param quantity
    */
-  async readMany(parentModels: ParentI[]) {
+  async readMany(allInstances: ParentI[], quantity: number) {
     await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOneParent(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOneParent(allInstances[i])
           .then(res => idArray.push(res.insertId))
           .catch(() => new CreateErr('MySQL CREATE in readMany() failed.'));
     }
 
     // then read
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.readOneParent(idArray[i])
           .catch(() => new ReadErr('MySQL READ in readMany() failed.'));
     }
@@ -64,22 +72,23 @@ export class MysqlService {
    * 3. Save their id's
    * 4. Start timer and update all objects
    * 5. Stop timer
-   * @param parentModels - objects to update
+   * @param allInstances
+   * @param quantity
    */
-  async updateMany(parentModels: ParentI[]) {
+  async updateMany(allInstances: ParentI[], quantity: number) {
     await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOneParent(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOneParent(allInstances[i])
           .then(res => idArray.push(res.insertId))
           .catch(() => new CreateErr('MySQL CREATE in updateMany() failed.'));
     }
 
     // then update
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.updateOneParent(idArray[i], `Updated ${i + 1}`)
           .catch(() => new UpdateErr('MySQL UPDATE in updateMany() failed.'));
     }
@@ -93,22 +102,23 @@ export class MysqlService {
    * 3. Save their id's
    * 4. Start timer and delete all objects
    * 5. Stop timer
-   * @param parentModels - objects to delete
+   * @param allInstances
+   * @param quantity
    */
-  async deleteMany(parentModels: ParentI[]) {
+  async deleteMany(allInstances: ParentI[], quantity: number) {
     await MysqlDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < parentModels.length; i++) {
-      await this.repo.createOneParent(parentModels[i])
+    for (let i = 0; i < allInstances.length; i++) {
+      await this.repo.createOneParent(allInstances[i])
           .then(res => idArray.push(res.insertId))
           .catch(() => new CreateErr('MySQL CREATE in deleteMany() failed.'));
     }
 
     // then delete
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    for (let i = 0; i < quantity; i++) {
       await this.repo.deleteOneParents(idArray[i])
           .catch(() => new DeleteErr('MySQL DELETE in deleteMany() failed.'));
     }

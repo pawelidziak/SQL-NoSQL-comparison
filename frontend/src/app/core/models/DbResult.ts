@@ -6,5 +6,6 @@ export interface DbResult {
 export enum DbName {
   MongoDB = 'MongoDB',
   MySQL = 'MySQL',
-  PostgreSQL = 'PostgreSQL'
+  PostgreSQL = 'PostgreSQL',
+  Cassandra = 'Cassandra'
 }

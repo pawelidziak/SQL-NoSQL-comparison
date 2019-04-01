@@ -11,15 +11,15 @@ import {MongoQueries} from './MongoQueries';
  */
 export class MongoDatabase implements DatabaseModel {
   private static instance: MongoDatabase;
-  private _con: MongoClient|any;
+  private _con: MongoClient | any;
 
   private readonly config = `mongodb://${MONGODB_CONFIG.host}:${
-      MONGODB_CONFIG.port}/${MONGODB_CONFIG.db_name}`;
+    MONGODB_CONFIG.port}/${MONGODB_CONFIG.db_name}`;
 
   private constructor() {
     this.connect()
-        .then(() => console.log(`MongoDB CONNECTED.`))
-        .catch(err => console.error(err));
+      .then(() => console.log(`MongoDB CONNECTED.`))
+      .catch(err => console.error(err));
   }
 
   static getInstance(): MongoDatabase {
@@ -35,11 +35,16 @@ export class MongoDatabase implements DatabaseModel {
   async connect(): Promise<any> {
     try {
       this._con =
-          await MongoClient.connect(this.config, {useNewUrlParser: true});
+        await MongoClient.connect(this.config, {useNewUrlParser: true});
+      await this.initDb();
     } catch (e) {
       console.error(e);
       throw new DatabaseConnectionErr('MongoDB connection failed.');
     }
+  }
+
+  async initDb(): Promise<any> {
+    await this.clearDB();
   }
 
   async clearDB(): Promise<any> {

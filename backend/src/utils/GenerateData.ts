@@ -13,8 +13,8 @@ export class GenerateData {
 
   static getParents(requestModel: RequestModel): ParentI[] {
     const tmp: ParentI[] = [];
-    for (let i = 0; i < requestModel.quantity; i++) {
-      tmp.push({name: `Name ${i + 1}`});
+    for (let i = 0; i < requestModel.dbSize; i++) {
+      tmp.push({parentId: `${i}`, name: `Name ${i + 1}`});
     }
     return tmp;
   }

@@ -1,4 +1,4 @@
 export interface ParentI {
-  parentId?: string;
+  parentId: string;
   name: string;
 }

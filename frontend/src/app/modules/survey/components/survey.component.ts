@@ -22,6 +22,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   responseError = '';
 
   req: RequestModel = {
+    dbSize: 100,
     quantity: 100,
     simpleQuery: true,
     testsReps: 10
@@ -90,7 +91,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
    * PRIVATE METHODS
    */
   private requestInvalid(): boolean {
-    return this.req.quantity < 1 || this.req.quantity > 10000;
+    return this.req.quantity < 1 || this.req.quantity > 10000 || this.req.dbSize < this.req.quantity;
   }
 
   private recognizeReq(operation: OperationType): Observable<SurveyResult> {
@@ -111,6 +112,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   private addResult(res: SurveyResult): void {
+    console.log(res);
     const list = [...this.results.get(res.operation)];
     const index = list.findIndex(x => x.quantity === res.quantity);
     if (index !== -1) {
