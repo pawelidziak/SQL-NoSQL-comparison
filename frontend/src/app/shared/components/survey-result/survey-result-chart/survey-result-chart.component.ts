@@ -30,16 +30,16 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
   // ];
   myColors = [
     {
-      backgroundColor: '#2196f3',
-      borderColor: '#2196f3',
-    },
-    {
       backgroundColor: '#673ab7',
       borderColor: '#673ab7',
     },
     {
       backgroundColor: '#ff9800',
       borderColor: '#ff9800',
+    },
+    {
+      backgroundColor: '#2196f3',
+      borderColor: '#2196f3',
     },
     {
       backgroundColor: '#cddc39',
