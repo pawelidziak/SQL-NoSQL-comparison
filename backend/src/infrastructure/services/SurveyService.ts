@@ -67,13 +67,14 @@ export class SurveyService {
 
   async surveyRead(reqModel: RequestModel): Promise<SurveyResult> {
     const allInstances: ParentI[] = GenerateData.getParents(reqModel);
+    const childInstances: any[]= GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
 
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.readMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mongoService.readMany(allInstances, childInstances, reqModel))
     });
 
     // PostgreSQL

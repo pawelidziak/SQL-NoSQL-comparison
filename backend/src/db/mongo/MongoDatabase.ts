@@ -51,6 +51,7 @@ export class MongoDatabase implements DatabaseModel {
     try {
       await this._con.db().dropDatabase();
       await this._con.db().createCollection(MongoQueries.PARENTS_TABLE);
+      await this._con.db().createCollection(MongoQueries.CHILDREN_TABLE);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MongoDB clear database failed.`);

@@ -61,6 +61,7 @@ export class MysqlDatabase implements DatabaseModel {
       await this.exec(MysqlQueries.MYSQL_CREATE_DB);
       await this.exec(MysqlQueries.MYSQL_USE_DB);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
+      await this.exec(MysqlQueries.MYSQL_CREATE_TABLES2);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MySQL init database failed.`);

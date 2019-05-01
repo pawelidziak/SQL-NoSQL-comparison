@@ -4,9 +4,9 @@ import {RequestModel} from '../core/models/RequestModel';
 
 export class GenerateData {
   static getChildren(requestModel: RequestModel): ChildModel[] {
-    const tmp: ChildModel[] = [];
-    for (let i = 0; i < requestModel.quantity; i++) {
-      tmp.push(new ChildModel(`${i}`, `Question ${i}`, `${i}`));
+    const tmp: any[] = [];
+    for (let i = 0; i < requestModel.dbSize; i++) {
+      tmp.push({childId: `${i}`, name: `Question ${i}`, parentId: `${i}`});
     }
     return tmp;
   }

@@ -10,14 +10,37 @@ export class MongoRepository {
     this.mongoDatabase = MongoDatabase.getInstance();
   }
 
-  async createOne(obj: ParentI) {
+  async createOneParent(obj: ParentI) {
     return await this.mongoDatabase.exec().collection('parents').insertOne(
-        Object.assign({}, obj));
+      Object.assign({}, obj));
+  }
+
+  async createOneChild(obj: any) {
+    return await this.mongoDatabase.exec().collection('children').insertOne(
+      Object.assign({}, obj));
   }
 
   async readOne(id: string) {
-    return await this.mongoDatabase.exec().collection('parents').findOne(
-        {'_id': new ObjectID(id)});
+    // return await this.mongoDatabase.exec().collection('parents').findOne(
+    //   {'_id': new ObjectID(id)});
+    return await this.mongoDatabase.exec().collection('parents')
+      .aggregate([
+        {$match: {'_id': new ObjectID(id)}}]);
+  }
+
+  async readOneComplex(idChild: string) {
+    return await this.mongoDatabase.exec().collection('children')
+      .aggregate([
+        {$match: {'_id': new ObjectID(idChild)}},
+        {
+          $lookup: {
+            from: 'parents',
+            localField: 'parentId',
+            foreignField: 'parentId',
+            as: 'joinedData'
+          }
+        }
+      ]);
   }
 
   async readAll() {
@@ -26,11 +49,11 @@ export class MongoRepository {
 
   async updateOne(id: string, newValue: string) {
     return await this.mongoDatabase.exec().collection('parents').updateOne(
-        {'_id': new ObjectID(id)}, {$set: {name: newValue}});
+      {'_id': new ObjectID(id)}, {$set: {name: newValue}});
   }
 
   async deleteOne(id: string) {
     return await this.mongoDatabase.exec().collection('parents').deleteOne(
-        {'_id': new ObjectID(id)});
+      {'_id': new ObjectID(id)});
   }
 }
