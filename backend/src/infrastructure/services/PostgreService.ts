@@ -3,6 +3,7 @@ import {PostgreDatabase} from '../../db/postgre/PostgreDatabase';
 import {Benchmark} from '../../utils/Benchmark';
 import {CreateErr, DeleteErr, ReadErr, UpdateErr} from '../errors';
 import {PostgreRepository} from '../repositories/PostgreRepository';
+import {RequestModel} from "../../core/models/RequestModel";
 
 export class PostgreService {
   private readonly repo: PostgreRepository;
@@ -40,23 +41,33 @@ export class PostgreService {
    * 3. Save their id's
    * 4. Start timer and read all objects
    * 5. Stop timer
-   * @param allInstances
-   * @param quantity
+   * @param parents
+   * @param children
+   * @param req
    */
-  async readMany(allInstances: ParentI[], quantity: number) {
+  async readMany(parents: ParentI[], children: any[], req: RequestModel) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
-      await this.repo.createOne(allInstances[i])
+    for (let i = 0; i < parents.length; i++) {
+      await this.repo.createOne(parents[i])
           .then(data => idArray.push(data.parentid))
           .catch(() => new CreateErr('PostgreSQL CREATE in readMany() failed.'));
+      // if (!req.simpleQuery) {
+      //   await this.repo.createOneChild(children[i])
+      //     .then(res => {
+      //       if (i < req.quantity) {
+      //         childrenIds.push(res.insertedId.toHexString());
+      //       }
+      //     })
+      //     .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
+      // }
     }
 
     //  then read
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < req.quantity; i++) {
       await this.repo.readOne(idArray[i])
           .catch(() => new ReadErr('PostgreSQL READ in readMany() failed.'));
     }

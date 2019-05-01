@@ -14,6 +14,13 @@ export class PostgreRepository {
     return await this.postgreDatabase.exec(sql);
   }
 
+  // todo
+  async createOneChild(obj: any) {
+    const sql =
+      `INSERT INTO children (name) VALUES ('${obj.name}') RETURNING parentId`;
+    return await this.postgreDatabase.exec(sql);
+  }
+
   async readOne(id: string) {
     const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
     return await this.postgreDatabase.exec(sql);

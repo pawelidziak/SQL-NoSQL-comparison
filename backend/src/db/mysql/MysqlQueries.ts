@@ -16,8 +16,8 @@ export class MysqlQueries {
       PRIMARY KEY   (parentId)
    );`;
   static MYSQL_CREATE_TABLES2 = `CREATE TABLE ${MysqlQueries.CHILDREN_TABLE} (
-      parentId      int NOT NULL AUTO_INCREMENT,
-      childId       int NOT NULL,
+      childId       int NOT NULL AUTO_INCREMENT,
+      parentId      int NOT NULL,
       name          varchar(255),
       PRIMARY KEY   (childId),
       FOREIGN KEY (parentId) REFERENCES parents(parentId)

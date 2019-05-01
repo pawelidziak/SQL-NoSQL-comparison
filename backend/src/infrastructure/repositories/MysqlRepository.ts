@@ -1,4 +1,3 @@
-import {ChildModel} from '../../core/models/ChildModel';
 import {ParentI} from '../../core/models/ParentModel';
 import {MysqlDatabase} from '../../db/mysql/MysqlDatabase';
 
@@ -9,9 +8,8 @@ export class MysqlRepository {
     this.mysqlDatabase = MysqlDatabase.getInstance();
   }
 
-  async createOneChild(obj: ChildModel): Promise<any> {
-    const sql = `INSERT INTO children (question, parentId) VALUES ('${
-        obj.getQuestion}', '${obj.getParentId}')`;
+  async createOneChild(obj: any): Promise<any> {
+    const sql = `INSERT INTO children (name, parentId) VALUES ('${obj.name}', '${obj.parentId}')`;
     return await this.mysqlDatabase.exec(sql);
   }
 
@@ -32,6 +30,12 @@ export class MysqlRepository {
 
   async readOneParent(id: string): Promise<any> {
     const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
+    return await this.mysqlDatabase.exec(sql);
+  }
+
+  async readOneComplex(id: string): Promise<any> {
+    const sql = `SELECT * FROM children JOIN parents WHERE children.childId = ${id} AND children.parentId = parents.parentId;`;
+    console.log(sql);
     return await this.mysqlDatabase.exec(sql);
   }
 

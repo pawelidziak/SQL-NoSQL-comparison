@@ -72,6 +72,7 @@ export class MysqlDatabase implements DatabaseModel {
     try {
       await this.exec(MysqlQueries.MYSQL_DROP_TABLES);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
+      await this.exec(MysqlQueries.MYSQL_CREATE_TABLES2);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MySQL clear database failed.`);

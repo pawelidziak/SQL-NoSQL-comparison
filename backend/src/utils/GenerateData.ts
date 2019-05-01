@@ -6,7 +6,7 @@ export class GenerateData {
   static getChildren(requestModel: RequestModel): ChildModel[] {
     const tmp: any[] = [];
     for (let i = 0; i < requestModel.dbSize; i++) {
-      tmp.push({childId: `${i}`, name: `Question ${i}`, parentId: `${i}`});
+      tmp.push({childId: `${i}`, name: `Question ${i}`, parentId: `${i + 1}`});
     }
     return tmp;
   }

@@ -66,7 +66,7 @@ export class SurveyService {
   }
 
   async surveyRead(reqModel: RequestModel): Promise<SurveyResult> {
-    const allInstances: ParentI[] = GenerateData.getParents(reqModel);
+    const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
     const childInstances: any[]= GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
 
@@ -74,28 +74,28 @@ export class SurveyService {
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.readMany(allInstances, childInstances, reqModel))
+        reqModel.testsReps, () => this.mongoService.readMany(parentInstances, childInstances, reqModel))
     });
 
     // PostgreSQL
     result.push({
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.postgreService.readMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.postgreService.readMany(parentInstances, childInstances, reqModel))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.readMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mysqlService.readMany(parentInstances, childInstances, reqModel))
     });
     // Cassandra
     // result.push({
     //   dbName: DbName.Cassandra,
     //   time: await this.calculateAverageTime(
     //     reqModel.testsReps,
-    //     () => this.cassandraService.readMany(allInstances, reqModel.dbSize))
+    //     () => this.cassandraService.readMany(parentInstances, reqModel.dbSize))
     // });
 
     return {
