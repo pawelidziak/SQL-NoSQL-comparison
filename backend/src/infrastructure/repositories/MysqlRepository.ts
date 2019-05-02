@@ -34,8 +34,17 @@ export class MysqlRepository {
   }
 
   async readOneComplex(id: string): Promise<any> {
-    const sql = `SELECT * FROM children JOIN parents WHERE children.childId = ${id} AND children.parentId = parents.parentId;`;
-    console.log(sql);
+    // const sql = `SELECT * FROM children JOIN parents WHERE children.childId = ${id} AND children.parentId = parents.parentId;`;
+
+    const sql = `SELECT 
+                    children.childId as ChildId_CHILD,
+                    children.parentId as ParentId_CHILD,
+                    children.name as Name_CHILD,
+                    parents.parentId as ParentId_PARENT,
+                    parents.name as Name_PARENT
+                 FROM children JOIN parents
+                 WHERE children.childId = ${id} AND children.parentId = parents.parentId;;
+    `;
     return await this.mysqlDatabase.exec(sql);
   }
 

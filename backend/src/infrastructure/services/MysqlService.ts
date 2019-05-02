@@ -68,10 +68,11 @@ export class MysqlService {
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOneParent(parentsIds[i])
-          .catch(() => new ReadErr('MySQL READ in readMany() failed.'));
+          .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
-          .catch(() => new ReadErr('MySQL READ in readMany() failed.'));
+          .then(res => console.log(res))
+          .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       }
     }
 

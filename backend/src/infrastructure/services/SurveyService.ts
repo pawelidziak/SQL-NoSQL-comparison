@@ -100,7 +100,7 @@ export class SurveyService {
 
     return {
       dbSize: reqModel.dbSize,
-      operation: OperationType.READ,
+      operation: OperationType.READ_ONE,
       quantity: reqModel.quantity,
       dbResult: result
     };

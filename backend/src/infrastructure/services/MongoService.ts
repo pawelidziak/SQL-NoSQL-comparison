@@ -76,10 +76,10 @@ export class MongoService {
     for (let i = 0; i < idArray.length; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(idArray[i])
-          .catch(() => new ReadErr('MongoDB READ in readMany() failed.'));
+          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
-          .catch(() => new ReadErr('MongoDB READ in readMany() failed.'));
+          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
       }
     }
 

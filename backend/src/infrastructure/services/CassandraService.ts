@@ -58,7 +58,7 @@ export class CassandraService {
     const time = new Benchmark();
     for (let i = 0; i < quantity; i++) {
       await this.repo.readOne(idArray[i])
-        .catch(() => new ReadErr('Cassandra READ in readMany() failed.'));
+        .catch(() => new ReadErr('Cassandra READ_ONE in readMany() failed.'));
     }
 
     return (time.elapsed());

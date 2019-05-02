@@ -15,4 +15,11 @@ export class PostgreQueries {
     parentId        SERIAL PRIMARY KEY NOT NULL,
     name            VARCHAR(100)
   );`;
+  static POSTGRE_CREATE_TABLES2 =
+    `CREATE TABLE ${PostgreQueries.CHILDREN_TABLE} (
+    childId        SERIAL PRIMARY KEY NOT NULL,
+    parentId       INT NOT NULL,
+    name           VARCHAR(100),
+    FOREIGN KEY (parentId) REFERENCES parents(parentId)
+  );`;
 }
