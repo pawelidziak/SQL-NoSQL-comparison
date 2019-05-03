@@ -40,7 +40,20 @@ export class PostgreRepository {
   }
 
   async readAll() {
-    // TODO
+    const sql = `SELECT  * FROM parents;`;
+    return await this.postgreDatabase.exec(sql);
+  }
+
+  async readAllComplex() {
+    const sql = `SELECT 
+                    children.childId as ChildId_CHILD,
+                    children.parentId as ParentId_CHILD,
+                    children.name as Name_CHILD,
+                    parents.parentId as ParentId_PARENT,
+                    parents.name as Name_PARENT
+                FROM children JOIN parents ON (children.parentId = parents.parentId);
+    `;
+    return await this.postgreDatabase.exec(sql);
   }
 
   async updateOne(id: string, newValue: string) {

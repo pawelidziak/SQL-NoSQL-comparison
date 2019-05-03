@@ -71,7 +71,6 @@ export class MysqlService {
           .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
-          .then(res => console.log(res))
           .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       }
     }

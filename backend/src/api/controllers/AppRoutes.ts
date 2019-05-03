@@ -5,6 +5,7 @@ export class AppRoutes {
   static DB_ROUTES = {
     createMany: '/createMany',
     readMany: '/readMany',
+    readManyComplex: '/readManyComplex',
     updateMany: '/updateMany',
     deleteMany: '/deleteMany',
   };

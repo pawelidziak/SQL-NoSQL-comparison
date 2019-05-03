@@ -65,7 +65,7 @@ export class SurveyService {
     };
   }
 
-  async surveyRead(reqModel: RequestModel): Promise<SurveyResult> {
+  async surveyRead(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
     const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
     const childInstances: any[]= GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
@@ -81,7 +81,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.postgreService.readMany(parentInstances, childInstances, reqModel))
+        reqModel.testsReps, () => this.postgreService.readMany(parentInstances, childInstances, reqModel, readAsAll))
     });
 
     // MySQL

@@ -45,7 +45,7 @@ export class PostgreService {
    * @param children
    * @param req
    */
-  async readMany(parents: ParentI[], children: any[], req: RequestModel) {
+  async readMany(parents: ParentI[], children: any[], req: RequestModel, readAsAll: boolean) {
     await PostgreDatabase.getInstance().clearDB();
     const parentsIds: string[] = [];
     const childrenIds: string[] = [];
@@ -64,6 +64,20 @@ export class PostgreService {
 
     //  then read
     const time = new Benchmark();
+
+    if (readAsAll) {
+      if (req.simpleQuery) {
+        await this.repo.readAll()
+          .then(res => console.log(res))
+          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+      } else {
+        await this.repo.readAllComplex()
+          .then(res => console.log(res))
+          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+      }
+      return (time.elapsed());
+    }
+
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(parentsIds[i])
@@ -71,14 +85,9 @@ export class PostgreService {
           .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
-          .then(res => {
-            console.log('no tutaj');
-            console.log(res);
-          })
           .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
       }
     }
-
     return (time.elapsed());
   }
 
