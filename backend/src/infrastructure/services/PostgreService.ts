@@ -77,6 +77,7 @@ export class PostgreService {
       return (time.elapsed());
     }
 
+    const time2 = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(parentsIds[i])
@@ -86,7 +87,8 @@ export class PostgreService {
           .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
       }
     }
-    return (time.elapsed());
+
+    return (time2.elapsed());
   }
 
   /**

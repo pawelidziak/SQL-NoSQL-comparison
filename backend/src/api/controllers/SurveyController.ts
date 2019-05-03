@@ -36,9 +36,9 @@ export class SurveyController {
         this.readManyByOne(req, res, next);
       });
     this._router.post(
-      AppRoutes.DB_ROUTES.readManyComplex,
+      AppRoutes.DB_ROUTES.readManyAsAll,
       (req: Request, res: Response, next: NextFunction) => {
-        this.readManyComplex(req, res, next);
+        this.readManyAsAll(req, res, next);
       });
 
     // Update
@@ -68,10 +68,10 @@ export class SurveyController {
       .catch((err: Error) => res.status(404).send('readManyByOne ERROR'));
   }
 
-  private readManyComplex(req: Request, res: Response, next: NextFunction) {
+  private readManyAsAll(req: Request, res: Response, next: NextFunction) {
     this.surveyService.surveyRead(req.body as RequestModel, true)
       .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('readManyComplex ERROR'));
+      .catch((err: Error) => res.status(404).send('readManyAsAll ERROR'));
   }
 
   private updateMany(req: Request, res: Response, next: NextFunction) {

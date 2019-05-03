@@ -20,7 +20,6 @@ export class MysqlService {
    */
   async createMany(allInstances: ParentI[], quantity: number) {
     await MysqlDatabase.getInstance().clearDB();
-    const time = new Benchmark();
 
     // create first
     for (let i = 0; i < allInstances.length; i++) {
@@ -28,6 +27,7 @@ export class MysqlService {
         .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
     }
 
+    const time = new Benchmark();
     for (let i = 0; i < quantity; i++) {
       await this.repo.createOneParent(allInstances[i])
         .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
@@ -78,6 +78,7 @@ export class MysqlService {
       return (time.elapsed());
     }
 
+    const time2 = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(parentsIds[i])
@@ -88,7 +89,7 @@ export class MysqlService {
       }
     }
 
-    return (time.elapsed());
+    return (time2.elapsed());
   }
 
 

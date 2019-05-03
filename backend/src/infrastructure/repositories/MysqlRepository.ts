@@ -18,11 +18,6 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readOneChild(id: string): Promise<any> {
-    const sql = `SELECT * FROM children WHERE childId = ${id}`;
-    return await this.mysqlDatabase.exec(sql);
-  }
-
   async readOne(id: string): Promise<any> {
     const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
@@ -59,20 +54,9 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async updateOneChild(id: string, newValue: string): Promise<any> {
-    const sql =
-        `UPDATE children SET question = '${newValue}' WHERE childId = ${id}`;
-    return await this.mysqlDatabase.exec(sql);
-  }
-
   async updateOneParent(id: string, newValue: string): Promise<any> {
     const sql =
         `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
-    return await this.mysqlDatabase.exec(sql);
-  }
-
-  async deleteOneChild(id: string): Promise<any> {
-    const sql = `DELETE FROM children WHERE childId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
   }
 
