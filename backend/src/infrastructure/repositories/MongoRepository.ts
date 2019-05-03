@@ -21,8 +21,6 @@ export class MongoRepository {
   }
 
   async readOne(id: string) {
-    // return await this.mongoDatabase.exec().collection('parents').findOne(
-    //   {'_id': new ObjectID(id)});
     return await this.mongoDatabase.exec().collection('parents')
       .aggregate([
         {$match: {'_id': new ObjectID(id)}}]);
@@ -45,6 +43,19 @@ export class MongoRepository {
 
   async readAll() {
     return await this.mongoDatabase.exec().collection('parents').find();
+  }
+  async readAllComplex() {
+    return await this.mongoDatabase.exec().collection('children')
+      .aggregate([
+        {
+          $lookup: {
+            from: 'parents',
+            localField: 'parentId',
+            foreignField: 'parentId',
+            as: 'joinedData'
+          }
+        }
+      ]);
   }
 
   async updateOne(id: string, newValue: string) {

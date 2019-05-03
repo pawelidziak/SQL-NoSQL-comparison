@@ -74,7 +74,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.readMany(parentInstances, childInstances, reqModel))
+        reqModel.testsReps, () => this.mongoService.readMany(parentInstances, childInstances, reqModel, readAsAll))
     });
 
     // PostgreSQL
@@ -100,7 +100,7 @@ export class SurveyService {
 
     return {
       dbSize: reqModel.dbSize,
-      operation: OperationType.READ_ONE,
+      operation: readAsAll ? OperationType.READ_ALL : OperationType.READ_ONE,
       quantity: reqModel.quantity,
       dbResult: result
     };

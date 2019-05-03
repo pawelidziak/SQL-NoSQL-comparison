@@ -45,8 +45,9 @@ export class MongoService {
    * @param parents
    * @param children
    * @param req
+   * @param readAsAll
    */
-  async readMany(parents: ParentI[], children: any[], req: RequestModel) {
+  async readMany(parents: ParentI[], children: any[], req: RequestModel, readAsAll: boolean) {
     await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
     const childrenIds: string[] = [];
@@ -54,26 +55,28 @@ export class MongoService {
     // create first
     for (let i = 0; i < parents.length; i++) {
       await this.repo.createOneParent(parents[i])
-        .then(res => {
-          if (i < req.quantity) {
-            idArray.push(res.insertedId.toHexString());
-          }
-        })
+        .then(res => idArray.push(res.insertedId.toHexString()))
         .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
       if (!req.simpleQuery) {
         await this.repo.createOneChild(children[i])
-          .then(res => {
-            if (i < req.quantity) {
-              childrenIds.push(res.insertedId.toHexString());
-            }
-          })
+          .then(res => childrenIds.push(res.insertedId.toHexString()))
           .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
       }
     }
-
     //  then read
     const time = new Benchmark();
-    for (let i = 0; i < idArray.length; i++) {
+    if (readAsAll) {
+      if (req.simpleQuery) {
+        await this.repo.readAll()
+          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
+      } else {
+        await this.repo.readAllComplex()
+          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
+      }
+      return (time.elapsed());
+    }
+
+    for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(idArray[i])
           .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));

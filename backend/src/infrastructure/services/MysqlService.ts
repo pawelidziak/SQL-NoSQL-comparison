@@ -70,12 +70,10 @@ export class MysqlService {
     if (readAsAll) {
       if (req.simpleQuery) {
         await this.repo.readAll()
-          .then(res => console.log(res))
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readAllComplex()
-          .then(res => console.log(res))
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       }
       return (time.elapsed());
     }
