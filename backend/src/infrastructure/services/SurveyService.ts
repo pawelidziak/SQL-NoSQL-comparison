@@ -98,6 +98,10 @@ export class SurveyService {
     //     () => this.cassandraService.readMany(parentInstances, reqModel.dbSize))
     // });
 
+    // console.log({ dbSize: reqModel.dbSize,
+    //   operation: readAsAll ? OperationType.READ_ALL : OperationType.READ_ONE,
+    //   quantity: reqModel.quantity,
+    //   dbResult: result});
     return {
       dbSize: reqModel.dbSize,
       operation: readAsAll ? OperationType.READ_ALL : OperationType.READ_ONE,

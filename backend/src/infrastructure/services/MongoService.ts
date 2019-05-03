@@ -22,16 +22,17 @@ export class MongoService {
     await MongoDatabase.getInstance().clearDB();
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
-      await this.repo.createOneParent(allInstances[i])
-        .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
-    }
+    await this.repo.createManyObj(allInstances)
+      .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
 
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
-      await this.repo.createOneParent(allInstances[i])
-        .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
-    }
+    await this.repo.createManyObj(allInstances)
+      .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
+
+    // for (let i = 0; i < quantity; i++) {
+    //   await this.repo.createOneParent(allInstances[i])
+    //     .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
+    // }
 
     return (time.elapsed());
   }

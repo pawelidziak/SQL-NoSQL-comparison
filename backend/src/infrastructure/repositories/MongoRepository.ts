@@ -15,6 +15,10 @@ export class MongoRepository {
       Object.assign({}, obj));
   }
 
+  async createManyObj(objs: any[]) {
+    return await this.mongoDatabase.exec().collection('parents').insertMany(objs);
+  }
+
   async createOneChild(obj: any) {
     return await this.mongoDatabase.exec().collection('children').insertOne(
       Object.assign({}, obj));
