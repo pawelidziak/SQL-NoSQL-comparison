@@ -30,7 +30,8 @@ export class SurveyComponent implements OnInit, OnDestroy {
 
   results: Map<OperationType | string, SurveyResult[]> = new Map([
     [OperationType.CREATE, []],
-    [OperationType.READ, []],
+    [OperationType.READ_ONE, []],
+    [OperationType.READ_ALL, []],
     [OperationType.UPDATE, []],
     [OperationType.DELETE, []],
   ]);
@@ -99,14 +100,17 @@ export class SurveyComponent implements OnInit, OnDestroy {
       case OperationType.CREATE:
         this.selectedIndex = 0;
         return this.surveyService.createMany(this.req);
-      case OperationType.READ:
+      case OperationType.READ_ONE:
         this.selectedIndex = 1;
+        return this.surveyService.readOne(this.req);
+      case OperationType.READ_ALL:
+        this.selectedIndex = 2;
         return this.surveyService.readMany(this.req);
       case OperationType.UPDATE:
-        this.selectedIndex = 2;
+        this.selectedIndex = 3;
         return this.surveyService.updateMany(this.req);
       case OperationType.DELETE:
-        this.selectedIndex = 3;
+        this.selectedIndex = 4;
         return this.surveyService.deleteMany(this.req);
     }
   }
@@ -125,6 +129,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.surveyLoading = false;
     this.upToSave = true;
     this.stopTimer();
+    console.log(this.results);
   }
 
   private startTimer(): void {

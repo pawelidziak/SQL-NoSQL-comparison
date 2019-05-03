@@ -14,8 +14,12 @@ export class SurveyService {
     return this.http.post<SurveyResult>(`${this.url}/createMany`, req);
   }
 
-  readMany(req: RequestModel): Observable<SurveyResult> {
+  readOne(req: RequestModel): Observable<SurveyResult> {
     return this.http.post<SurveyResult>(`${this.url}/readMany`, req);
+  }
+
+  readMany(req: RequestModel): Observable<SurveyResult> {
+    return this.http.post<SurveyResult>(`${this.url}/readManyComplex`, req);
   }
 
   updateMany(req: RequestModel): Observable<SurveyResult> {

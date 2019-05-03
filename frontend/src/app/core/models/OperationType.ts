@@ -1,6 +1,7 @@
 export enum OperationType {
   CREATE = 'CREATE',
-  READ = 'READ',
+  READ_ONE = 'READ_ONE',
+  READ_ALL = 'READ_ALL',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE'
 }

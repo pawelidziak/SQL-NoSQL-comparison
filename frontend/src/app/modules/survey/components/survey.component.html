@@ -100,8 +100,14 @@
             <button mat-raised-button
                     color="primary"
                     [disabled]="surveyLoading"
-                    (click)="sendRequest(operations.READ)">
-              Read
+                    (click)="sendRequest(operations.READ_ONE)">
+              Read One
+            </button>
+            <button mat-raised-button
+                    color="primary"
+                    [disabled]="surveyLoading"
+                    (click)="sendRequest(operations.READ_ALL)">
+              Read All
             </button>
             <button mat-raised-button
                     color="primary"
