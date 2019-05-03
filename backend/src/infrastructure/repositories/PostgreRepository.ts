@@ -34,13 +34,13 @@ export class PostgreRepository {
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
                 FROM children JOIN parents ON (children.parentId = parents.parentId)
-                where children.childId = ${id};
+                WHERE children.childId = ${id};
     `;
     return await this.postgreDatabase.exec(sql);
   }
 
   async readAll() {
-    const sql = `SELECT  * FROM parents;`;
+    const sql = `SELECT * FROM parents;`;
     return await this.postgreDatabase.exec(sql);
   }
 

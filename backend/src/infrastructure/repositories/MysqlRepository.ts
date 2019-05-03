@@ -23,19 +23,12 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readAllParents(): Promise<any> {
-    const sql = `SELECT * FROM parents`;
-    return await this.mysqlDatabase.exec(sql);
-  }
-
-  async readOneParent(id: string): Promise<any> {
+  async readOne(id: string): Promise<any> {
     const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
   }
 
   async readOneComplex(id: string): Promise<any> {
-    // const sql = `SELECT * FROM children JOIN parents WHERE children.childId = ${id} AND children.parentId = parents.parentId;`;
-
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
@@ -43,7 +36,25 @@ export class MysqlRepository {
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
                  FROM children JOIN parents
-                 WHERE children.childId = ${id} AND children.parentId = parents.parentId;;
+                 WHERE children.childId = ${id} AND children.parentId = parents.parentId;
+    `;
+    return await this.mysqlDatabase.exec(sql);
+  }
+
+  async readAll(): Promise<any> {
+    const sql = `SELECT * FROM parents;`;
+    return await this.mysqlDatabase.exec(sql);
+  }
+
+  async readAllComplex(): Promise<any> {
+    const sql = `SELECT 
+                    children.childId as ChildId_CHILD,
+                    children.parentId as ParentId_CHILD,
+                    children.name as Name_CHILD,
+                    parents.parentId as ParentId_PARENT,
+                    parents.name as Name_PARENT
+                 FROM children JOIN parents
+                 WHERE children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
   }

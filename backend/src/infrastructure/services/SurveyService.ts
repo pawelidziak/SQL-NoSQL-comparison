@@ -88,7 +88,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.readMany(parentInstances, childInstances, reqModel))
+        reqModel.testsReps, () => this.mysqlService.readMany(parentInstances, childInstances, reqModel, readAsAll))
     });
     // Cassandra
     // result.push({

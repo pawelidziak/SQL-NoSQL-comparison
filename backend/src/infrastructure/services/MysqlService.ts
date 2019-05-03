@@ -45,8 +45,9 @@ export class MysqlService {
    * @param parents
    * @param children
    * @param req
+   * @param readAsAll
    */
-  async readMany(parents: ParentI[], children: any[], req: RequestModel) {
+  async readMany(parents: ParentI[], children: any[], req: RequestModel, readAsAll: boolean) {
     await MysqlDatabase.getInstance().clearDB();
     const parentsIds: string[] = [];
     const childrenIds: string[] = [];
@@ -65,9 +66,23 @@ export class MysqlService {
 
     // then read
     const time = new Benchmark();
+
+    if (readAsAll) {
+      if (req.simpleQuery) {
+        await this.repo.readAll()
+          .then(res => console.log(res))
+          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+      } else {
+        await this.repo.readAllComplex()
+          .then(res => console.log(res))
+          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+      }
+      return (time.elapsed());
+    }
+
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
-        await this.repo.readOneParent(parentsIds[i])
+        await this.repo.readOne(parentsIds[i])
           .catch(() => new ReadErr('MySQL READ_ONE in readMany() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
