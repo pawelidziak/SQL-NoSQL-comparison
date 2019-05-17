@@ -24,7 +24,6 @@ export class SurveyComponent implements OnInit, OnDestroy {
   req: RequestModel = {
     dbSize: 100,
     quantity: 100,
-    simpleQuery: true,
     testsReps: 2
   };
 
