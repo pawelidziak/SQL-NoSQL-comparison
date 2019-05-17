@@ -8,10 +8,28 @@ export class PostgreRepository {
     this.postgreDatabase = PostgreDatabase.getInstance();
   }
 
+  async dropIndexes() {
+    const sql = 'drop index if exists childread';
+    await this.postgreDatabase.exec(sql);
+  }
+
   async createManyParents(objs: any[]): Promise<any> {
     let sql = `INSERT INTO parents (name, parentId) VALUES `;
     for (let i = 0; i < objs.length; i++) {
       sql += `('${objs[i].name}', '${objs[i].parentId}')`;
+      if (i < objs.length - 1) {
+        sql += ',';
+      } else {
+        sql += ';';
+      }
+    }
+    return await this.postgreDatabase.exec(sql);
+  }
+
+  async createManyChildren(objs: any[]): Promise<any> {
+    let sql = `INSERT INTO children (name, childId, parentId) VALUES `;
+    for (let i = 0; i < objs.length; i++) {
+      sql += `('${objs[i].name}', '${objs[i].childId}', '${objs[i].parentId}')`;
       if (i < objs.length - 1) {
         sql += ',';
       } else {
@@ -33,20 +51,30 @@ export class PostgreRepository {
     return await this.postgreDatabase.exec(sql);
   }
 
-  async readOne(id: string) {
-    const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
-    return await this.postgreDatabase.exec(sql);
-  }
-
-  async readOneComplex(id: string) {
+  async readOneIgnoreIndex(name: string): Promise<any> {
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
                     children.name as Name_CHILD,
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
-                FROM children JOIN parents ON (children.parentId = parents.parentId)
-                WHERE children.childId = ${id};
+                 FROM children 
+                 JOIN parents ON (children.parentId = parents.parentId)
+                 WHERE children.name = '${name}';
+    `;
+    return await this.postgreDatabase.exec(sql);
+  }
+
+  async readOneWithIndex(name: string) {
+    const sql = `SELECT 
+                    children.childId as ChildId_CHILD,
+                    children.parentId as ParentId_CHILD,
+                    children.name as Name_CHILD,
+                    parents.parentId as ParentId_PARENT,
+                    parents.name as Name_PARENT
+                 FROM children 
+                 JOIN parents ON (children.parentId = parents.parentId)
+                 WHERE children.name = '${name}';
     `;
     return await this.postgreDatabase.exec(sql);
   }

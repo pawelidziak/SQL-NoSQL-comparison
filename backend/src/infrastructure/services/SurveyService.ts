@@ -65,7 +65,7 @@ export class SurveyService {
     };
   }
 
-  async surveyReadNoIndexes(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
+  async surveyReadNoIndexes(reqModel: RequestModel): Promise<SurveyResult> {
     const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
     const childInstances: any[] = GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
@@ -76,13 +76,13 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mongoService.readNoIndexes(parentInstances, childInstances, reqModel))
     });
-    //
-    // // PostgreSQL
-    // result.push({
-    //   dbName: DbName.PostgreSQL,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps, () => this.postgreService.readNoIndx(parentInstances, childInstances, reqModel, readAsAll))
-    // });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(
+        reqModel.testsReps, () => this.postgreService.readNoIndexes(parentInstances, childInstances, reqModel))
+    });
 
     // MySQL
     result.push({
@@ -106,7 +106,7 @@ export class SurveyService {
     };
   }
 
-  async surveyReadWithIndexes(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
+  async surveyReadWithIndexes(reqModel: RequestModel): Promise<SurveyResult> {
     const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
     const childInstances: any[] = GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
@@ -117,13 +117,13 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mongoService.readWithIndexes(parentInstances, childInstances, reqModel))
     });
-    //
-    // // PostgreSQL
-    // result.push({
-    //   dbName: DbName.PostgreSQL,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps, () => this.postgreService.readNoIndx(parentInstances, childInstances, reqModel, readAsAll))
-    // });
+
+    // PostgreSQL
+    result.push({
+      dbName: DbName.PostgreSQL,
+      time: await this.calculateAverageTime(
+        reqModel.testsReps, () => this.postgreService.readWithIndexes(parentInstances, childInstances, reqModel))
+    });
 
     // MySQL
     result.push({
@@ -139,10 +139,6 @@ export class SurveyService {
     //     () => this.cassandraService.readNoIndx(parentInstances, reqModel.dbSize))
     // });
 
-    // console.log({ dbSize: reqModel.dbSize,
-    //   operation: readAsAll ? OperationType.READ_INDEXES : OperationType.READ_NO_INDEXES,
-    //   quantity: reqModel.quantity,
-    //   dbResult: result});
     return {
       dbSize: reqModel.dbSize,
       operation: OperationType.READ_INDEXES ,

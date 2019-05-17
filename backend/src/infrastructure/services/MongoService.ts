@@ -44,17 +44,15 @@ export class MongoService {
   }
 
   /**
-   * 1. Clear database
-   * 2. Create given objects to database
-   * 3. Save their id's
-   * 4. Start timer and read all objects
-   * 5. Stop timer
+   * 1. Create given objects in database
+   * 2. Save their id's
+   * 3. Start timer and read all objects
+   * 4. Stop timer
    * @param parents
    * @param children
    * @param req
    */
   private async read(parents: ParentI[], children: any[], req: RequestModel) {
-
     await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
       .catch(() => new CreateErr('MongoDB CREATE in readNoIndexes() failed.'));
     await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))

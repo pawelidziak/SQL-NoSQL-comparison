@@ -22,4 +22,6 @@ export class PostgreQueries {
     name           VARCHAR(100),
     FOREIGN KEY (parentId) REFERENCES parents(parentId)
   );`;
+
+  static POSTGRE_INDEXES = 'CREATE INDEX childRead ON children (name);';
 }

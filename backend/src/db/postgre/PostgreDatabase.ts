@@ -54,6 +54,7 @@ export class PostgreDatabase implements DatabaseModel {
       await this.switchDb();
       await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES);
       await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES2);
+      await this.exec(PostgreQueries.POSTGRE_INDEXES);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr('PostgreSQL init database failed.');
@@ -65,6 +66,7 @@ export class PostgreDatabase implements DatabaseModel {
       await this.exec(PostgreQueries.POSTGRE_DROP_TABLES);
       await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES);
       await this.exec(PostgreQueries.POSTGRE_CREATE_TABLES2);
+      await this.exec(PostgreQueries.POSTGRE_INDEXES);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`PostgreSQL clear database failed.`);

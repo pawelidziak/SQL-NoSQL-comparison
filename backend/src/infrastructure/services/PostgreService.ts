@@ -24,75 +24,50 @@ export class PostgreService {
     // create first
     await this.repo.createManyParents(allInstances.slice(0, req.dbSize))
       .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
-    // for (let i = 0; i < req.dbSize; i++) {
-    //   await this.repo.createOne(allInstances[i])
-    //     .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
-    // }
 
     const time = new Benchmark();
-    // for (let i = 0; i < req.quantity; i++) {
-    //   await this.repo.createOne(allInstances[i])
-    //     .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
-    // }
     await this.repo.createManyParents(allInstances.slice(req.dbSize))
       .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+
     return (time.elapsed());
   }
 
   /**
    * 1. Clear database
-   * 2. Create given objects to database
-   * 3. Save their id's
-   * 4. Start timer and read all objects
-   * 5. Stop timer
+   * 2. Create given objects in database
    * @param parents
    * @param children
    * @param req
-   * @param readAsAll
    */
-  async readMany(parents: ParentI[], children: any[], req: RequestModel, readAsAll: boolean) {
+  private async beforeRead(parents: ParentI[], children: any[], req: RequestModel) {
     await PostgreDatabase.getInstance().clearDB();
-    const parentsIds: string[] = [];
-    const childrenIds: string[] = [];
+    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('PostgreSQL CREATE in createManyParents() failed.'));
+    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('PostgreSQL CREATE in createManyChildren() failed.'));
+  }
 
-    // create first
-    for (let i = 0; i < req.dbSize + req.quantity; i++) {
-      await this.repo.createOne(parents[i])
-        .then(data => parentsIds.push(data[0].parentid))
-        .catch(() => new CreateErr('PostgreSQL CREATE in readNoIndx() failed.'));
-      if (!req.simpleQuery) {
-        await this.repo.createOneChild(children[i])
-          .then(data => childrenIds.push(data[0].childid))
-          .catch(() => new CreateErr('PostgreSQL CREATE in readNoIndx() failed.'));
-      }
-    }
+  async readNoIndexes(parents: ParentI[], children: any[], req: RequestModel) {
+    await this.beforeRead(parents, children, req);
+    await this.repo.dropIndexes();
 
-    //  then read
     const time = new Benchmark();
-
-    if (readAsAll) {
-      if (req.simpleQuery) {
-        await this.repo.readAll()
-          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
-      } else {
-        await this.repo.readAllComplex()
-          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
-      }
-      return (time.elapsed());
-    }
-
-    const time2 = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      if (req.simpleQuery) {
-        await this.repo.readOne(parentsIds[i])
-          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
-      } else {
-        await this.repo.readOneComplex(childrenIds[i])
-          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
-      }
+      await this.repo.readOneIgnoreIndex(`Child ${i + 1}`)
+        .catch(() => new ReadErr('PostgreSQL READ in readNoIndexes() failed.'));
     }
+    return (time.elapsed());
+  }
 
-    return (time2.elapsed());
+  async readWithIndexes(parents: ParentI[], children: any[], req: RequestModel) {
+    await this.beforeRead(parents, children, req);
+
+    const time = new Benchmark();
+    for (let i = 0; i < req.quantity; i++) {
+      await this.repo.readOneWithIndex(`Child ${i + 1}`)
+        .catch(() => new ReadErr('PostgreSQL READ in readNoIndexes() failed.'));
+    }
+    return (time.elapsed());
   }
 
   /**

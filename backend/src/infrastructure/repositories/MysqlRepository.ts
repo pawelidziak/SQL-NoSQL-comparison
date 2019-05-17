@@ -44,9 +44,6 @@ export class MysqlRepository {
   }
 
   async readOneIgnoreIndex(name: string): Promise<any> {
-    // const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
-    // return await this.mysqlDatabase.exec(sql);
-
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
@@ -56,7 +53,7 @@ export class MysqlRepository {
                  FROM children 
                  ignore index(childRead)
                  JOIN parents
-                 WHERE children.name = "${name}" AND children.parentId = parents.parentId;
+                 WHERE children.name = '${name}' AND children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
   }
@@ -69,7 +66,7 @@ export class MysqlRepository {
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
                  FROM children JOIN parents
-                 WHERE children.name = "${name}" AND children.parentId = parents.parentId;
+                 WHERE children.name = '${name}' AND children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
   }
