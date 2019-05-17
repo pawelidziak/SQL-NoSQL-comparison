@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '@shared/shared.module';
 import {SurveyResultComponent} from './survey-result.component';
-import {MatCardModule} from '@angular/material';
+import {MatButtonModule, MatCardModule} from '@angular/material';
 import {SurveyResultTableComponent} from './survey-result-table/survey-result-table.component';
 import {SurveyResultChartComponent} from './survey-result-chart/survey-result-chart.component';
 import {ChartsModule} from 'ng2-charts/ng2-charts';
@@ -16,6 +16,7 @@ import {ChartsModule} from 'ng2-charts/ng2-charts';
     SharedModule,
 
     MatCardModule,
+    MatButtonModule,
     ChartsModule
   ],
   exports: [

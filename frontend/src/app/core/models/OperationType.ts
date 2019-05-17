@@ -1,7 +1,7 @@
 export enum OperationType {
   CREATE = 'CREATE',
-  READ_ONE = 'READ_ONE',
-  READ_ALL = 'READ_ALL',
+  READ_NO_INDEXES = 'READ_NO_INDEXES',
+  READ_INDEXES = 'READ_INDEXES',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE'
 }

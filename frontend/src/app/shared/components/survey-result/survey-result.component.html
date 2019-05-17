@@ -1,4 +1,4 @@
-<section class="section-survey-result">
+<section class="section-survey-result" *ngIf="result">
   <!-- NO RESULTS -->
   <div *ngIf="result.length === 0" class="no-result">
     <h4>Test the operation: <strong>{{operation}}</strong></h4>
@@ -8,6 +8,6 @@
   <div *ngIf="result.length > 0">
     <app-survey-result-table [result]="result"></app-survey-result-table>
     <div style="height: 72px;"></div>
-    <!--<app-survey-result-chart [result]="result"></app-survey-result-chart>-->
+    <app-survey-result-chart [result]="result"></app-survey-result-chart>
   </div>
 </section>

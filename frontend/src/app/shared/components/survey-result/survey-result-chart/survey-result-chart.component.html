@@ -1,5 +1,6 @@
-<div style="display: block" *ngIf="showChart">
+<div class="first-chart" *ngIf="showChart">
   <canvas baseChart
+          id="canvasOne"
           [datasets]="chartData"
           [colors]="myColors"
           [labels]="chartLabels"
@@ -7,4 +8,22 @@
           legend="true"
           chartType="bar">
   </canvas>
+  <div class="chart-button">
+    <button mat-raised-button color="primary" (click)="downloadImg(true)">DOWNLOAD</button>
+  </div>
+</div>
+
+<div style="display: block; margin-top: 48px;" *ngIf="showChart">
+  <canvas baseChart
+          id="canvasTwo"
+          [datasets]="chartData"
+          [colors]="myColors"
+          [labels]="chartLabels"
+          [options]="chartOptions"
+          legend="true"
+          chartType="line">
+  </canvas>
+  <div class="chart-button">
+    <button mat-raised-button color="primary" (click)="downloadImg(false)">DOWNLOAD</button>
+  </div>
 </div>

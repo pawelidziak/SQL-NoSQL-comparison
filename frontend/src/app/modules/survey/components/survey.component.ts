@@ -25,13 +25,13 @@ export class SurveyComponent implements OnInit, OnDestroy {
     dbSize: 100,
     quantity: 100,
     simpleQuery: true,
-    testsReps: 10
+    testsReps: 2
   };
 
   results: Map<OperationType | string, SurveyResult[]> = new Map([
     [OperationType.CREATE, []],
-    [OperationType.READ_ONE, []],
-    [OperationType.READ_ALL, []],
+    [OperationType.READ_NO_INDEXES, []],
+    [OperationType.READ_INDEXES, []],
     [OperationType.UPDATE, []],
     [OperationType.DELETE, []],
   ]);
@@ -92,7 +92,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
    * PRIVATE METHODS
    */
   private requestInvalid(): boolean {
-    return this.req.quantity < 1 || this.req.quantity > 10000 || this.req.dbSize < this.req.quantity;
+    return this.req.quantity < 1 || this.req.dbSize < 1;
   }
 
   private recognizeReq(operation: OperationType): Observable<SurveyResult> {
@@ -100,12 +100,12 @@ export class SurveyComponent implements OnInit, OnDestroy {
       case OperationType.CREATE:
         this.selectedIndex = 0;
         return this.surveyService.createMany(this.req);
-      case OperationType.READ_ONE:
+      case OperationType.READ_NO_INDEXES:
         this.selectedIndex = 1;
-        return this.surveyService.readOne(this.req);
-      case OperationType.READ_ALL:
+        return this.surveyService.readNoIndexes(this.req);
+      case OperationType.READ_INDEXES:
         this.selectedIndex = 2;
-        return this.surveyService.readMany(this.req);
+        return this.surveyService.readWithIndexes(this.req);
       case OperationType.UPDATE:
         this.selectedIndex = 3;
         return this.surveyService.updateMany(this.req);
@@ -116,7 +116,6 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   private addResult(res: SurveyResult): void {
-    console.log(res);
     const list = [...this.results.get(res.operation)];
     const index = list.findIndex(x => x.quantity === res.quantity);
     if (index !== -1) {
@@ -129,7 +128,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.surveyLoading = false;
     this.upToSave = true;
     this.stopTimer();
-    console.log(this.results);
+    console.log(this.results.get(res.operation));
   }
 
   private startTimer(): void {

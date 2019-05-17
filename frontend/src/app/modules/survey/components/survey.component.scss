@@ -17,11 +17,11 @@
 }
 
 .survey-actions {
-  display: flex;
-  justify-content: space-evenly;
 
   button {
     text-transform: uppercase;
+    margin-right: 12px;
+    margin-bottom: 12px;
   }
 }
 

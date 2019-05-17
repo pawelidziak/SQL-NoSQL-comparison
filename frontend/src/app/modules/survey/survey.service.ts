@@ -14,12 +14,12 @@ export class SurveyService {
     return this.http.post<SurveyResult>(`${this.url}/createMany`, req);
   }
 
-  readOne(req: RequestModel): Observable<SurveyResult> {
-    return this.http.post<SurveyResult>(`${this.url}/readMany`, req);
+  readNoIndexes(req: RequestModel): Observable<SurveyResult> {
+    return this.http.post<SurveyResult>(`${this.url}/readNoIndexes`, req);
   }
 
-  readMany(req: RequestModel): Observable<SurveyResult> {
-    return this.http.post<SurveyResult>(`${this.url}/readManyAsAll`, req);
+  readWithIndexes(req: RequestModel): Observable<SurveyResult> {
+    return this.http.post<SurveyResult>(`${this.url}/readWithIndexes`, req);
   }
 
   updateMany(req: RequestModel): Observable<SurveyResult> {

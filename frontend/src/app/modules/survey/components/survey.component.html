@@ -17,7 +17,7 @@
             <mat-chip color="accent" selected>{{databases.MySQL}}</mat-chip>
             <mat-chip color="primary" selected>{{databases.PostgreSQL}}</mat-chip>
             <mat-chip color="accent" selected>{{databases.MongoDB}}</mat-chip>
-            <mat-chip color="primary" selected>{{databases.Cassandra}}</mat-chip>
+            <!--<mat-chip color="primary" selected>{{databases.Cassandra}}</mat-chip>-->
           </mat-chip-list>
         </div>
       </div>
@@ -90,24 +90,12 @@
       <div class="row survey-option-row">
         <!-- CRUD -->
         <div class="col-6">
-          <div class="survey-actions text-center">
+          <div class="survey-actions ">
             <button mat-raised-button
                     color="primary"
                     [disabled]="surveyLoading"
                     (click)="sendRequest(operations.CREATE)">
               Create
-            </button>
-            <button mat-raised-button
-                    color="primary"
-                    [disabled]="surveyLoading"
-                    (click)="sendRequest(operations.READ_ONE)">
-              Read One
-            </button>
-            <button mat-raised-button
-                    color="primary"
-                    [disabled]="surveyLoading"
-                    (click)="sendRequest(operations.READ_ALL)">
-              Read All
             </button>
             <button mat-raised-button
                     color="primary"
@@ -121,6 +109,20 @@
                     (click)="sendRequest(operations.DELETE)">
               Delete
             </button>
+            <div>
+              <button mat-raised-button
+                      color="primary"
+                      [disabled]="surveyLoading"
+                      (click)="sendRequest(operations.READ_NO_INDEXES)">
+                Read (no indexes)
+              </button>
+              <button mat-raised-button
+                      color="primary"
+                      [disabled]="surveyLoading"
+                      (click)="sendRequest(operations.READ_INDEXES)">
+                Read (with indexes)
+              </button>
+            </div>
           </div>
         </div>
 

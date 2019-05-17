@@ -30,18 +30,22 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
   // ];
   myColors = [
     {
+      fill: false,
       backgroundColor: '#673ab7',
       borderColor: '#673ab7',
     },
     {
+      fill: false,
       backgroundColor: '#ff9800',
       borderColor: '#ff9800',
     },
     {
+      fill: false,
       backgroundColor: '#2196f3',
       borderColor: '#2196f3',
     },
     {
+      fill: false,
       backgroundColor: '#cddc39',
       borderColor: '#cddc39',
     },
@@ -69,8 +73,10 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
       scaleShowVerticalLines: false,
       responsive: true,
       legend: {
+        // position: 'bottom',
         labels: {
-          fontSize: 15
+          fontSize: 15,
+          padding: 20
         }
       },
       scales: {
@@ -115,5 +121,25 @@ export class SurveyResultChartComponent implements OnInit, OnChanges {
         }
       }
     }
+  }
+
+  downloadImg(canvasOne: boolean): void {
+    let image: any;
+    if (canvasOne) {
+      image = document.getElementById('canvasOne');
+    } else {
+      image = document.getElementById('canvasTwo');
+    }
+
+    console.log(image);
+    console.log(image.getContext('2d'));
+
+    const dataURL = image.toDataURL();
+    const tmpLink = document.createElement('a');
+    tmpLink.download = 'image.png';
+    tmpLink.href = dataURL;
+    document.body.appendChild(tmpLink);
+    tmpLink.click();
+    document.body.removeChild(tmpLink);
   }
 }
