@@ -45,27 +45,25 @@ export class MongoService {
 
   /**
    * 1. Create given objects in database
-   * 2. Save their id's
-   * 3. Start timer and read all objects
-   * 4. Stop timer
+   * 2. Start timer and read all objects
+   * 3. Stop timer
    * @param parents
    * @param children
    * @param req
    */
   private async read(parents: ParentI[], children: any[], req: RequestModel) {
     await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MongoDB CREATE in readNoIndexes() failed.'));
+      .catch(() => new CreateErr('MongoDB CREATE in read() failed.'));
     await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MongoDB CREATE in readNoIndexes() failed.'));
+      .catch(() => new CreateErr('MongoDB CREATE in read() failed.'));
 
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
       await this.repo.readOne(`Child ${i + 1}`)
-        .catch(() => new ReadErr('MongoDB READ in readNoIndexes() failed.'));
+        .catch(() => new ReadErr('MongoDB READ in read() failed.'));
     }
     return (time.elapsed());
   }
-
 
   /**
    * 1. Clear database

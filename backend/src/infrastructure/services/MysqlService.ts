@@ -32,48 +32,35 @@ export class MysqlService {
     return (time.elapsed());
   }
 
-  /**
-   * 1. Clear database
-   * 2. Create given objects in database
-   * @param parents
-   * @param children
-   * @param req
-   */
-  private async beforeRead(parents: ParentI[], children: any[], req: RequestModel) {
-    await MysqlDatabase.getInstance().clearDB();
-    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MySQL CREATE in createManyParents() failed.'));
-    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MySQL CREATE in createManyChildren() failed.'));
-  }
-
-  private async read(parents: ParentI[], children: any[], req: RequestModel) {
-    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MySQL CREATE in readNoIndexes() failed.'));
-    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
-      .catch(() => new CreateErr('MySQL CREATE in readNoIndexes() failed.'));
-
-    const time = new Benchmark();
-    for (let i = 0; i < req.quantity; i++) {
-      await this.repo.readOne(`Child ${i + 1}`)
-        .catch(() => new ReadErr('MySQL READ in readNoIndexes() failed.'));
-    }
-    return (time.elapsed());
-  }
-
   async readNoIndexes(parents: ParentI[], children: any[], req: RequestModel) {
     await MysqlDatabase.getInstance().clearDB();
-    await this.repo.dropIndexes();
-    return this.read(parents, children, req);
+    return this.read(parents, children, req, true);
   }
 
   async readWithIndexes(parents: ParentI[], children: any[], req: RequestModel) {
-    await this.beforeRead(parents, children, req);
+    await MysqlDatabase.getInstance().clearDB();
+    return this.read(parents, children, req);
+  }
+
+  /**
+   * 1. Create given objects in database
+   * 2. Start timer and read all objects
+   * 3. Stop timer
+   * @param parents
+   * @param children
+   * @param req
+   * @param ignoreIndex
+   */
+  private async read(parents: ParentI[], children: any[], req: RequestModel, ignoreIndex = false) {
+    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('MySQL CREATE in read() failed.'));
+    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('MySQL CREATE in read() failed.'));
 
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      await this.repo.readOneWithIndex(`Child ${i + 1}`)
-        .catch(() => new ReadErr('MySQL READ in readNoIndexes() failed.'));
+      await this.repo.readOne(`Child ${i + 1}`, ignoreIndex)
+        .catch(() => new ReadErr('MySQL READ in read() failed.'));
     }
     return (time.elapsed());
   }
@@ -131,7 +118,7 @@ export class MysqlService {
     // then delete
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      await this.repo.deleteOneParents(idArray[i])
+      await this.repo.deleteOneParent(idArray[i])
         .catch(() => new DeleteErr('MySQL DELETE in deleteMany() failed.'));
     }
 

@@ -71,14 +71,16 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readOne(name: string): Promise<any> {
+  async readOne(name: string, ignoreIndex = false): Promise<any> {
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
                     children.name as Name_CHILD,
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
-                 FROM children JOIN parents
+                 FROM children
+                 ${ignoreIndex ? 'ignore index(childRead)' : ''}
+                 JOIN parents
                  WHERE children.name = '${name}' AND children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
@@ -90,7 +92,7 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async deleteOneParents(id: string): Promise<any> {
+  async deleteOneParent(id: string): Promise<any> {
     const sql = `DELETE FROM parents WHERE parentId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
   }
