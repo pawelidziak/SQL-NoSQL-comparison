@@ -8,9 +8,8 @@ export class MysqlRepository {
     this.mysqlDatabase = MysqlDatabase.getInstance();
   }
 
-  async createOneChild(obj: any): Promise<any> {
-    const sql = `INSERT INTO children (name, parentId) VALUES ('${obj.name}', '${obj.parentId}')`;
-    return await this.mysqlDatabase.exec(sql);
+  async dropIndexes() {
+
   }
 
   async createManyParents(objs: any[]): Promise<any> {
@@ -25,6 +24,7 @@ export class MysqlRepository {
     }
     return await this.mysqlDatabase.exec(sql);
   }
+
   async createManyChildren(objs: any[]): Promise<any> {
     let sql = `INSERT INTO children (name, childId, parentId) VALUES `;
     for (let i = 0; i < objs.length; i++) {
@@ -71,12 +71,7 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readAll(): Promise<any> {
-    const sql = `SELECT * FROM parents;`;
-    return await this.mysqlDatabase.exec(sql);
-  }
-
-  async readAllComplex(): Promise<any> {
+  async readOne(name: string): Promise<any> {
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
@@ -84,7 +79,7 @@ export class MysqlRepository {
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
                  FROM children JOIN parents
-                 WHERE children.parentId = parents.parentId;
+                 WHERE children.name = '${name}' AND children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
   }

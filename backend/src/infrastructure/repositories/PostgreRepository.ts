@@ -13,6 +13,9 @@ export class PostgreRepository {
     await this.postgreDatabase.exec(sql);
   }
 
+  /**
+   * CREATE
+   */
   async createManyParents(objs: any[]): Promise<any> {
     let sql = `INSERT INTO parents (name, parentId) VALUES `;
     for (let i = 0; i < objs.length; i++) {
@@ -39,19 +42,17 @@ export class PostgreRepository {
     return await this.postgreDatabase.exec(sql);
   }
 
-  async createOne(obj: ParentI) {
+  async createOneParent(obj: ParentI) {
     const sql =
       `INSERT INTO parents (name) VALUES ('${obj.name}') RETURNING parentId`;
     return await this.postgreDatabase.exec(sql);
   }
 
-  async createOneChild(obj: any) {
-    const sql =
-      `INSERT INTO children (name, parentId) VALUES ('${obj.name}', '${obj.parentId}') RETURNING childId`;
-    return await this.postgreDatabase.exec(sql);
-  }
 
-  async readOneIgnoreIndex(name: string): Promise<any> {
+  /**
+   * READ
+   */
+  async readOne(name: string): Promise<any> {
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
@@ -65,44 +66,19 @@ export class PostgreRepository {
     return await this.postgreDatabase.exec(sql);
   }
 
-  async readOneWithIndex(name: string) {
-    const sql = `SELECT 
-                    children.childId as ChildId_CHILD,
-                    children.parentId as ParentId_CHILD,
-                    children.name as Name_CHILD,
-                    parents.parentId as ParentId_PARENT,
-                    parents.name as Name_PARENT
-                 FROM children 
-                 JOIN parents ON (children.parentId = parents.parentId)
-                 WHERE children.name = '${name}';
-    `;
-    return await this.postgreDatabase.exec(sql);
-  }
-
-  async readAll() {
-    const sql = `SELECT * FROM parents;`;
-    return await this.postgreDatabase.exec(sql);
-  }
-
-  async readAllComplex() {
-    const sql = `SELECT 
-                    children.childId as ChildId_CHILD,
-                    children.parentId as ParentId_CHILD,
-                    children.name as Name_CHILD,
-                    parents.parentId as ParentId_PARENT,
-                    parents.name as Name_PARENT
-                FROM children JOIN parents ON (children.parentId = parents.parentId);
-    `;
-    return await this.postgreDatabase.exec(sql);
-  }
-
-  async updateOne(id: string, newValue: string) {
+  /**
+   * UPDATE
+   */
+  async updateOneParent(id: string, newValue: string) {
     const sql =
       `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
     return await this.postgreDatabase.exec(sql);
   }
 
-  async deleteOne(id: string) {
+  /**
+   * DELETE
+   */
+  async deleteOneParent(id: string) {
     const sql = `DELETE FROM parents WHERE parentId = ${id}`;
     return await this.postgreDatabase.exec(sql);
   }

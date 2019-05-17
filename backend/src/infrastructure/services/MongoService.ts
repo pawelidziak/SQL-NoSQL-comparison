@@ -90,7 +90,7 @@ export class MongoService {
     // then update
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
+      await this.repo.updateOneParent(idArray[i], `Updated ${i + 1}`)
         .catch(() => new UpdateErr('Mongo read ERROR.'));
     }
 
@@ -120,7 +120,7 @@ export class MongoService {
     // then delete
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      await this.repo.deleteOne(idArray[i])
+      await this.repo.deleteOneParent(idArray[i])
         .catch(() => new DeleteErr('Mongo read ERROR.'));
     }
 

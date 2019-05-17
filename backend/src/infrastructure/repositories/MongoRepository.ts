@@ -11,14 +11,12 @@ export class MongoRepository {
   }
 
   async dropIndexes() {
-    try {
-      await this.mongoDatabase.exec().collection('children').dropIndex('name_1');
-    } catch (e) {
-      console.error(e);
-    }
+    await this.mongoDatabase.exec().collection('children').dropIndex('name_1');
   }
 
-
+  /**
+   * CREATE
+   */
   async createOneParent(obj: ParentI) {
     return await this.mongoDatabase.exec().collection('parents').insertOne(
       Object.assign({}, obj));
@@ -32,15 +30,13 @@ export class MongoRepository {
     return await this.mongoDatabase.exec().collection('children').insertMany([...objs]);
   }
 
-  async createOneChild(obj: any) {
-    return await this.mongoDatabase.exec().collection('children').insertOne(
-      Object.assign({}, obj));
-  }
-
-  async readOne(idChild: string) {
+  /**
+   * READ
+   */
+  async readOne(name: string) {
     return await this.mongoDatabase.exec().collection('children')
       .aggregate([
-        {$match: {'name': idChild}},
+        {$match: {'name': name}},
         {
           $lookup: {
             from: 'parents',
@@ -52,45 +48,18 @@ export class MongoRepository {
       ]);
   }
 
-  async readOneComplex(idChild: string) {
-    return await this.mongoDatabase.exec().collection('children')
-      .aggregate([
-        {$match: {'name': idChild}},
-        {
-          $lookup: {
-            from: 'parents',
-            localField: 'parentId',
-            foreignField: 'parentId',
-            as: 'joinedData'
-          }
-        }
-      ]);
-  }
-
-  async readAll() {
-    return await this.mongoDatabase.exec().collection('parents').find();
-  }
-
-  async readAllComplex() {
-    return await this.mongoDatabase.exec().collection('children')
-      .aggregate([
-        {
-          $lookup: {
-            from: 'parents',
-            localField: 'parentId',
-            foreignField: 'parentId',
-            as: 'joinedData'
-          }
-        }
-      ]);
-  }
-
-  async updateOne(id: string, newValue: string) {
+  /**
+   * UPDATE
+   */
+  async updateOneParent(id: string, newValue: string) {
     return await this.mongoDatabase.exec().collection('parents').updateOne(
       {'_id': new ObjectID(id)}, {$set: {name: newValue}});
   }
 
-  async deleteOne(id: string) {
+  /**
+   * DELETE
+   */
+  async deleteOneParent(id: string) {
     return await this.mongoDatabase.exec().collection('parents').deleteOne(
       {'_id': new ObjectID(id)});
   }
