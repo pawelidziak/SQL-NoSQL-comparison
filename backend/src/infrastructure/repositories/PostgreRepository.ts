@@ -8,13 +8,25 @@ export class PostgreRepository {
     this.postgreDatabase = PostgreDatabase.getInstance();
   }
 
+  async createManyParents(objs: any[]): Promise<any> {
+    let sql = `INSERT INTO parents (name, parentId) VALUES `;
+    for (let i = 0; i < objs.length; i++) {
+      sql += `('${objs[i].name}', '${objs[i].parentId}')`;
+      if (i < objs.length - 1) {
+        sql += ',';
+      } else {
+        sql += ';';
+      }
+    }
+    return await this.postgreDatabase.exec(sql);
+  }
+
   async createOne(obj: ParentI) {
     const sql =
       `INSERT INTO parents (name) VALUES ('${obj.name}') RETURNING parentId`;
     return await this.postgreDatabase.exec(sql);
   }
 
-  // todo
   async createOneChild(obj: any) {
     const sql =
       `INSERT INTO children (name, parentId) VALUES ('${obj.name}', '${obj.parentId}') RETURNING childId`;

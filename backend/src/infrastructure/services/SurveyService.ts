@@ -31,7 +31,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.createMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mongoService.createMany(allInstances, reqModel))
     });
 
     // PostgreSQL
@@ -39,14 +39,14 @@ export class SurveyService {
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
         reqModel.testsReps,
-        () => this.postgreService.createMany(allInstances, reqModel.quantity))
+        () => this.postgreService.createMany(allInstances, reqModel))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.createMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mysqlService.createMany(allInstances, reqModel))
     });
 
     // Cassandra
@@ -65,46 +65,87 @@ export class SurveyService {
     };
   }
 
-  async surveyRead(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
+  async surveyReadNoIndexes(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
     const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
-    const childInstances: any[]= GenerateData.getChildren(reqModel);
+    const childInstances: any[] = GenerateData.getChildren(reqModel);
     const result: DbResult[] = [];
 
     // MongoDB
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.readMany(parentInstances, childInstances, reqModel, readAsAll))
+        reqModel.testsReps, () => this.mongoService.readNoIndexes(parentInstances, childInstances, reqModel))
     });
-
-    // PostgreSQL
-    result.push({
-      dbName: DbName.PostgreSQL,
-      time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.postgreService.readMany(parentInstances, childInstances, reqModel, readAsAll))
-    });
+    //
+    // // PostgreSQL
+    // result.push({
+    //   dbName: DbName.PostgreSQL,
+    //   time: await this.calculateAverageTime(
+    //     reqModel.testsReps, () => this.postgreService.readNoIndx(parentInstances, childInstances, reqModel, readAsAll))
+    // });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.readMany(parentInstances, childInstances, reqModel, readAsAll))
+        reqModel.testsReps, () => this.mysqlService.readNoIndexes(parentInstances, childInstances, reqModel))
     });
     // Cassandra
     // result.push({
     //   dbName: DbName.Cassandra,
     //   time: await this.calculateAverageTime(
     //     reqModel.testsReps,
-    //     () => this.cassandraService.readMany(parentInstances, reqModel.dbSize))
+    //     () => this.cassandraService.readNoIndx(parentInstances, reqModel.dbSize))
+    // });
+
+    return {
+      dbSize: reqModel.dbSize,
+      operation: OperationType.READ_NO_INDEXES,
+      quantity: reqModel.quantity,
+      dbResult: result
+    };
+  }
+
+  async surveyReadWithIndexes(reqModel: RequestModel, readAsAll = false): Promise<SurveyResult> {
+    const parentInstances: ParentI[] = GenerateData.getParents(reqModel);
+    const childInstances: any[] = GenerateData.getChildren(reqModel);
+    const result: DbResult[] = [];
+
+    // MongoDB
+    result.push({
+      dbName: DbName.MongoDB,
+      time: await this.calculateAverageTime(
+        reqModel.testsReps, () => this.mongoService.readWithIndexes(parentInstances, childInstances, reqModel))
+    });
+    //
+    // // PostgreSQL
+    // result.push({
+    //   dbName: DbName.PostgreSQL,
+    //   time: await this.calculateAverageTime(
+    //     reqModel.testsReps, () => this.postgreService.readNoIndx(parentInstances, childInstances, reqModel, readAsAll))
+    // });
+
+    // MySQL
+    result.push({
+      dbName: DbName.MySQL,
+      time: await this.calculateAverageTime(
+        reqModel.testsReps, () => this.mysqlService.readWithIndexes(parentInstances, childInstances, reqModel))
+    });
+    // Cassandra
+    // result.push({
+    //   dbName: DbName.Cassandra,
+    //   time: await this.calculateAverageTime(
+    //     reqModel.testsReps,
+    //     () => this.cassandraService.readNoIndx(parentInstances, reqModel.dbSize))
     // });
 
     // console.log({ dbSize: reqModel.dbSize,
-    //   operation: readAsAll ? OperationType.READ_ALL : OperationType.READ_ONE,
+    //   operation: readAsAll ? OperationType.READ_INDEXES : OperationType.READ_NO_INDEXES,
     //   quantity: reqModel.quantity,
     //   dbResult: result});
     return {
       dbSize: reqModel.dbSize,
-      operation: readAsAll ? OperationType.READ_ALL : OperationType.READ_ONE,
+      operation: OperationType.READ_INDEXES ,
       quantity: reqModel.quantity,
       dbResult: result
     };
@@ -118,7 +159,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.updateMany(allInstances, reqModel.dbSize))
+        reqModel.testsReps, () => this.mongoService.updateMany(allInstances, reqModel))
     });
 
     // PostgreSQL
@@ -126,14 +167,14 @@ export class SurveyService {
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
         reqModel.testsReps,
-        () => this.postgreService.updateMany(allInstances, reqModel.quantity))
+        () => this.postgreService.updateMany(allInstances, reqModel))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.updateMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mysqlService.updateMany(allInstances, reqModel))
     });
     // Cassandra
     // result.push({
@@ -159,7 +200,7 @@ export class SurveyService {
     result.push({
       dbName: DbName.MongoDB,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mongoService.deleteMany(allInstances, reqModel.dbSize))
+        reqModel.testsReps, () => this.mongoService.deleteMany(allInstances, reqModel))
     });
 
     // PostgreSQL
@@ -167,14 +208,14 @@ export class SurveyService {
       dbName: DbName.PostgreSQL,
       time: await this.calculateAverageTime(
         reqModel.testsReps,
-        () => this.postgreService.deleteMany(allInstances, reqModel.quantity))
+        () => this.postgreService.deleteMany(allInstances, reqModel))
     });
 
     // MySQL
     result.push({
       dbName: DbName.MySQL,
       time: await this.calculateAverageTime(
-        reqModel.testsReps, () => this.mysqlService.deleteMany(allInstances, reqModel.quantity))
+        reqModel.testsReps, () => this.mysqlService.deleteMany(allInstances, reqModel))
     });
 
 

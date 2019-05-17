@@ -10,13 +10,26 @@ export class MongoRepository {
     this.mongoDatabase = MongoDatabase.getInstance();
   }
 
+  async dropIndexes() {
+    try {
+      await this.mongoDatabase.exec().collection('children').dropIndex('name_1');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
   async createOneParent(obj: ParentI) {
     return await this.mongoDatabase.exec().collection('parents').insertOne(
       Object.assign({}, obj));
   }
 
-  async createManyObj(objs: any[]) {
-    return await this.mongoDatabase.exec().collection('parents').insertMany(objs);
+  async createManyParents(objs: any[]) {
+    return await this.mongoDatabase.exec().collection('parents').insertMany([...objs]);
+  }
+
+  async createManyChildren(objs: any[]) {
+    return await this.mongoDatabase.exec().collection('children').insertMany([...objs]);
   }
 
   async createOneChild(obj: any) {
@@ -24,16 +37,25 @@ export class MongoRepository {
       Object.assign({}, obj));
   }
 
-  async readOne(id: string) {
-    return await this.mongoDatabase.exec().collection('parents')
+  async readOne(idChild: string) {
+    return await this.mongoDatabase.exec().collection('children')
       .aggregate([
-        {$match: {'_id': new ObjectID(id)}}]);
+        {$match: {'name': idChild}},
+        {
+          $lookup: {
+            from: 'parents',
+            localField: 'parentId',
+            foreignField: 'parentId',
+            as: 'joinedData'
+          }
+        }
+      ]);
   }
 
   async readOneComplex(idChild: string) {
     return await this.mongoDatabase.exec().collection('children')
       .aggregate([
-        {$match: {'_id': new ObjectID(idChild)}},
+        {$match: {'name': idChild}},
         {
           $lookup: {
             from: 'parents',
@@ -48,6 +70,7 @@ export class MongoRepository {
   async readAll() {
     return await this.mongoDatabase.exec().collection('parents').find();
   }
+
   async readAllComplex() {
     return await this.mongoDatabase.exec().collection('children')
       .aggregate([

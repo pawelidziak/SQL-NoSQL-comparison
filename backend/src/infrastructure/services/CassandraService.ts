@@ -51,14 +51,14 @@ export class CassandraService {
     for (let i = 0; i < allInstances.length; i++) {
       await this.repo.createOne(allInstances[i])
         .then(() => idArray.push(allInstances[i].parentId))
-        .catch(() => new CreateErr('Cassandra CREATE in readMany() failed.'));
+        .catch(() => new CreateErr('Cassandra CREATE in readNoIndx() failed.'));
     }
 
     //  then read
     const time = new Benchmark();
     for (let i = 0; i < quantity; i++) {
       await this.repo.readOne(idArray[i])
-        .catch(() => new ReadErr('Cassandra READ_ONE in readMany() failed.'));
+        .catch(() => new ReadErr('Cassandra READ_NO_INDEXES in readNoIndx() failed.'));
     }
 
     return (time.elapsed());

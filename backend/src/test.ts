@@ -6,7 +6,7 @@ export class Test {
   constructor() {
     this.surveyCreate = new SurveyService();
     setTimeout(() => {
-      this.surveyCreate.surveyRead({quantity: 100, dbSize: 200, testsReps: 2, simpleQuery: true})
+      this.surveyCreate.surveyReadNoIndexes({quantity: 100, dbSize: 200, testsReps: 2, simpleQuery: true})
         .then(res => console.log(res))
         .catch(err => console.error(err));
     }, 2000);

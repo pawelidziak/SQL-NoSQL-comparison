@@ -22,6 +22,8 @@ export class MysqlQueries {
       PRIMARY KEY   (childId),
       FOREIGN KEY (parentId) REFERENCES parents(parentId)
    );`;
+
+  static MYSQL_INDEX = `CREATE INDEX childRead ON children (name)`;
 }
 
 // CREATE TABLE ${MysqlQueries.CHILDREN_TABLE} (

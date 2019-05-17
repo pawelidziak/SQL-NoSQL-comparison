@@ -16,22 +16,26 @@ export class PostgreService {
    * 1. Clear database
    * 2. Add objects in loop
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async createMany(allInstances: ParentI[], quantity: number) {
+  async createMany(allInstances: ParentI[], req: RequestModel) {
     await PostgreDatabase.getInstance().clearDB();
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
-      await this.repo.createOne(allInstances[i])
-        .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
-    }
+    await this.repo.createManyParents(allInstances.slice(0, req.dbSize))
+      .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+    // for (let i = 0; i < req.dbSize; i++) {
+    //   await this.repo.createOne(allInstances[i])
+    //     .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+    // }
 
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
-      await this.repo.createOne(allInstances[i])
-        .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
-    }
+    // for (let i = 0; i < req.quantity; i++) {
+    //   await this.repo.createOne(allInstances[i])
+    //     .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
+    // }
+    await this.repo.createManyParents(allInstances.slice(req.dbSize))
+      .catch(() => new CreateErr('PostgreSQL CREATE in createMany() failed.'));
     return (time.elapsed());
   }
 
@@ -52,14 +56,14 @@ export class PostgreService {
     const childrenIds: string[] = [];
 
     // create first
-    for (let i = 0; i < parents.length; i++) {
+    for (let i = 0; i < req.dbSize + req.quantity; i++) {
       await this.repo.createOne(parents[i])
         .then(data => parentsIds.push(data[0].parentid))
-        .catch(() => new CreateErr('PostgreSQL CREATE in readMany() failed.'));
+        .catch(() => new CreateErr('PostgreSQL CREATE in readNoIndx() failed.'));
       if (!req.simpleQuery) {
         await this.repo.createOneChild(children[i])
           .then(data => childrenIds.push(data[0].childid))
-          .catch(() => new CreateErr('PostgreSQL CREATE in readMany() failed.'));
+          .catch(() => new CreateErr('PostgreSQL CREATE in readNoIndx() failed.'));
       }
     }
 
@@ -69,10 +73,10 @@ export class PostgreService {
     if (readAsAll) {
       if (req.simpleQuery) {
         await this.repo.readAll()
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
       } else {
         await this.repo.readAllComplex()
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
       }
       return (time.elapsed());
     }
@@ -81,10 +85,10 @@ export class PostgreService {
     for (let i = 0; i < req.quantity; i++) {
       if (req.simpleQuery) {
         await this.repo.readOne(parentsIds[i])
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
       } else {
         await this.repo.readOneComplex(childrenIds[i])
-          .catch(() => new ReadErr('PostgreSQL READ_ONE in readMany() failed.'));
+          .catch(() => new ReadErr('PostgreSQL READ_NO_INDEXES in readNoIndx() failed.'));
       }
     }
 
@@ -98,14 +102,14 @@ export class PostgreService {
    * 4. Start timer and update all objects
    * 5. Stop timer
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async updateMany(allInstances: ParentI[], quantity: number) {
+  async updateMany(allInstances: ParentI[], req: RequestModel) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
+    for (let i = 0; i < req.dbSize + req.quantity; i++) {
       await this.repo.createOne(allInstances[i])
         .then(data => idArray.push(data.parentid))
         .catch(
@@ -114,7 +118,7 @@ export class PostgreService {
 
     // then update
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < req.quantity; i++) {
       await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
         .catch(
           () => new UpdateErr('PostgreSQL UPDATE in updateMany() failed.'));
@@ -130,14 +134,14 @@ export class PostgreService {
    * 4. Start timer and delete all objects
    * 5. Stop timer
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async deleteMany(allInstances: ParentI[], quantity: number) {
+  async deleteMany(allInstances: ParentI[], req: RequestModel) {
     await PostgreDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
+    for (let i = 0; i < req.dbSize + req.quantity; i++) {
       await this.repo.createOne(allInstances[i])
         .then(data => idArray.push(data.parentid))
         .catch(
@@ -146,7 +150,7 @@ export class PostgreService {
 
     // then delete
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < req.quantity; i++) {
       await this.repo.deleteOne(idArray[i])
         .catch(
           () => new DeleteErr('PostgreSQL DELETE in deleteMany() failed.'));

@@ -13,17 +13,55 @@ export class MysqlRepository {
     return await this.mysqlDatabase.exec(sql);
   }
 
+  async createManyParents(objs: any[]): Promise<any> {
+    let sql = `INSERT INTO parents (name, parentId) VALUES `;
+    for (let i = 0; i < objs.length; i++) {
+      sql += `('${objs[i].name}', '${objs[i].parentId}')`;
+      if (i < objs.length - 1) {
+        sql += ',';
+      } else {
+        sql += ';';
+      }
+    }
+    return await this.mysqlDatabase.exec(sql);
+  }
+  async createManyChildren(objs: any[]): Promise<any> {
+    let sql = `INSERT INTO children (name, childId, parentId) VALUES `;
+    for (let i = 0; i < objs.length; i++) {
+      sql += `('${objs[i].name}', '${objs[i].childId}', '${objs[i].parentId}')`;
+      if (i < objs.length - 1) {
+        sql += ',';
+      } else {
+        sql += ';';
+      }
+    }
+    return await this.mysqlDatabase.exec(sql);
+  }
+
   async createOneParent(obj: ParentI): Promise<any> {
     const sql = `INSERT INTO parents (name) VALUES ('${obj.name}')`;
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readOne(id: string): Promise<any> {
-    const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
+  async readOneIgnoreIndex(name: string): Promise<any> {
+    // const sql = `SELECT * FROM parents WHERE parentId = ${id}`;
+    // return await this.mysqlDatabase.exec(sql);
+
+    const sql = `SELECT 
+                    children.childId as ChildId_CHILD,
+                    children.parentId as ParentId_CHILD,
+                    children.name as Name_CHILD,
+                    parents.parentId as ParentId_PARENT,
+                    parents.name as Name_PARENT
+                 FROM children 
+                 ignore index(childRead)
+                 JOIN parents
+                 WHERE children.name = "${name}" AND children.parentId = parents.parentId;
+    `;
     return await this.mysqlDatabase.exec(sql);
   }
 
-  async readOneComplex(id: string): Promise<any> {
+  async readOneWithIndex(name: string): Promise<any> {
     const sql = `SELECT 
                     children.childId as ChildId_CHILD,
                     children.parentId as ParentId_CHILD,
@@ -31,7 +69,7 @@ export class MysqlRepository {
                     parents.parentId as ParentId_PARENT,
                     parents.name as Name_PARENT
                  FROM children JOIN parents
-                 WHERE children.childId = ${id} AND children.parentId = parents.parentId;
+                 WHERE children.name = "${name}" AND children.parentId = parents.parentId;
     `;
     return await this.mysqlDatabase.exec(sql);
   }
@@ -56,7 +94,7 @@ export class MysqlRepository {
 
   async updateOneParent(id: string, newValue: string): Promise<any> {
     const sql =
-        `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
+      `UPDATE parents SET name = '${newValue}' WHERE parentId = ${id}`;
     return await this.mysqlDatabase.exec(sql);
   }
 

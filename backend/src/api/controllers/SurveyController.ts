@@ -31,14 +31,14 @@ export class SurveyController {
 
     // Read
     this._router.post(
-      AppRoutes.DB_ROUTES.readMany,
+      AppRoutes.DB_ROUTES.readNoIndx,
       (req: Request, res: Response, next: NextFunction) => {
-        this.readManyByOne(req, res, next);
+        this.readNoIndexes(req, res, next);
       });
     this._router.post(
-      AppRoutes.DB_ROUTES.readManyAsAll,
+      AppRoutes.DB_ROUTES.readWithIndx,
       (req: Request, res: Response, next: NextFunction) => {
-        this.readManyAsAll(req, res, next);
+        this.readWithIndexes(req, res, next);
       });
 
     // Update
@@ -62,16 +62,16 @@ export class SurveyController {
       .catch((err: Error) => res.status(404).send('createMany ERROR'));
   }
 
-  private readManyByOne(req: Request, res: Response, next: NextFunction) {
-    this.surveyService.surveyRead(req.body as RequestModel)
+  private readNoIndexes(req: Request, res: Response, next: NextFunction) {
+    this.surveyService.surveyReadNoIndexes(req.body as RequestModel)
       .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('readManyByOne ERROR'));
+      .catch((err: Error) => res.status(404).send('readNoIndexes ERROR'));
   }
 
-  private readManyAsAll(req: Request, res: Response, next: NextFunction) {
-    this.surveyService.surveyRead(req.body as RequestModel, true)
+  private readWithIndexes(req: Request, res: Response, next: NextFunction) {
+    this.surveyService.surveyReadWithIndexes(req.body as RequestModel)
       .then((result: SurveyResult) => res.json(result))
-      .catch((err: Error) => res.status(404).send('readManyAsAll ERROR'));
+      .catch((err: Error) => res.status(404).send('readWithIndexes ERROR'));
   }
 
   private updateMany(req: Request, res: Response, next: NextFunction) {

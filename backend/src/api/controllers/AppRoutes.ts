@@ -4,8 +4,8 @@ import {SurveyController} from './SurveyController';
 export class AppRoutes {
   static DB_ROUTES = {
     createMany: '/createMany',
-    readMany: '/readMany',
-    readManyAsAll: '/readManyAsAll',
+    readNoIndx: '/readNoIndexes',
+    readWithIndx: '/readWithIndexes',
     updateMany: '/updateMany',
     deleteMany: '/deleteMany',
   };

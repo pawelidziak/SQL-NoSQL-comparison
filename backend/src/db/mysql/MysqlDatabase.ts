@@ -62,6 +62,7 @@ export class MysqlDatabase implements DatabaseModel {
       await this.exec(MysqlQueries.MYSQL_USE_DB);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES2);
+      await this.exec(MysqlQueries.MYSQL_INDEX);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MySQL init database failed.`);
@@ -73,6 +74,7 @@ export class MysqlDatabase implements DatabaseModel {
       await this.exec(MysqlQueries.MYSQL_DROP_TABLES);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES);
       await this.exec(MysqlQueries.MYSQL_CREATE_TABLES2);
+      await this.exec(MysqlQueries.MYSQL_INDEX);
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MySQL clear database failed.`);

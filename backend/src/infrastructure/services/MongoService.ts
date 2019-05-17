@@ -16,25 +16,31 @@ export class MongoService {
    * 1. Clear database
    * 2. Add objects in loop
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async createMany(allInstances: ParentI[], quantity: number) {
+  async createMany(allInstances: ParentI[], req: RequestModel) {
     await MongoDatabase.getInstance().clearDB();
 
     // create first
-    await this.repo.createManyObj(allInstances)
+    await this.repo.createManyParents(allInstances.slice(0, req.dbSize))
       .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
 
     const time = new Benchmark();
-    await this.repo.createManyObj(allInstances)
+    await this.repo.createManyParents(allInstances.slice(req.dbSize))
       .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
 
-    // for (let i = 0; i < quantity; i++) {
-    //   await this.repo.createOneParent(allInstances[i])
-    //     .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
-    // }
-
     return (time.elapsed());
+  }
+
+  async readNoIndexes(parents: ParentI[], children: any[], req: RequestModel) {
+    await MongoDatabase.getInstance().clearDB();
+    await this.repo.dropIndexes();
+    return this.read(parents, children, req);
+  }
+
+  async readWithIndexes(parents: ParentI[], children: any[], req: RequestModel) {
+    await MongoDatabase.getInstance().clearDB();
+    return this.read(parents, children, req);
   }
 
   /**
@@ -46,50 +52,22 @@ export class MongoService {
    * @param parents
    * @param children
    * @param req
-   * @param readAsAll
    */
-  async readMany(parents: ParentI[], children: any[], req: RequestModel, readAsAll: boolean) {
-    await MongoDatabase.getInstance().clearDB();
-    const idArray: string[] = [];
-    const childrenIds: string[] = [];
+  private async read(parents: ParentI[], children: any[], req: RequestModel) {
 
-    // create first
-    for (let i = 0; i < parents.length; i++) {
-      await this.repo.createOneParent(parents[i])
-        .then(res => idArray.push(res.insertedId.toHexString()))
-        .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
-      if (!req.simpleQuery) {
-        await this.repo.createOneChild(children[i])
-          .then(res => childrenIds.push(res.insertedId.toHexString()))
-          .catch(() => new CreateErr('MongoDB CREATE in readMany() failed.'));
-      }
-    }
-    //  then read
+    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('MongoDB CREATE in readNoIndexes() failed.'));
+    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
+      .catch(() => new CreateErr('MongoDB CREATE in readNoIndexes() failed.'));
+
     const time = new Benchmark();
-    if (readAsAll) {
-      if (req.simpleQuery) {
-        await this.repo.readAll()
-          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
-      } else {
-        await this.repo.readAllComplex()
-          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
-      }
-      return (time.elapsed());
-    }
-
-    const time2 = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
-      if (req.simpleQuery) {
-        await this.repo.readOne(idArray[i])
-          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
-      } else {
-        await this.repo.readOneComplex(childrenIds[i])
-          .catch(() => new ReadErr('MongoDB READ_ONE in readMany() failed.'));
-      }
+      await this.repo.readOne(`Child ${i + 1}`)
+        .catch(() => new ReadErr('MongoDB READ in readNoIndexes() failed.'));
     }
-
-    return (time2.elapsed());
+    return (time.elapsed());
   }
+
 
   /**
    * 1. Clear database
@@ -98,14 +76,14 @@ export class MongoService {
    * 4. Start timer and update all objects
    * 5. Stop timer
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async updateMany(allInstances: ParentI[], quantity: number) {
+  async updateMany(allInstances: ParentI[], req: RequestModel) {
     await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
+    for (let i = 0; i < req.dbSize + req.quantity; i++) {
       await this.repo.createOneParent(allInstances[i])
         .then(res => idArray.push(res.insertedId.toHexString()))
         .catch(() => new CreateErr('MongoDB CREATE in updateMany() failed.'));
@@ -113,7 +91,7 @@ export class MongoService {
 
     // then update
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < req.quantity; i++) {
       await this.repo.updateOne(idArray[i], `Updated ${i + 1}`)
         .catch(() => new UpdateErr('Mongo read ERROR.'));
     }
@@ -128,14 +106,14 @@ export class MongoService {
    * 4. Start timer and delete all objects
    * 5. Stop timer
    * @param allInstances
-   * @param quantity
+   * @param req
    */
-  async deleteMany(allInstances: ParentI[], quantity: number) {
+  async deleteMany(allInstances: ParentI[], req: RequestModel) {
     await MongoDatabase.getInstance().clearDB();
     const idArray: string[] = [];
 
     // create first
-    for (let i = 0; i < allInstances.length; i++) {
+    for (let i = 0; i < req.dbSize + req.quantity; i++) {
       await this.repo.createOneParent(allInstances[i])
         .then(res => idArray.push(res.insertedId.toHexString()))
         .catch(() => new CreateErr('MongoDB CREATE in deleteMany() failed.'));
@@ -143,7 +121,7 @@ export class MongoService {
 
     // then delete
     const time = new Benchmark();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < req.quantity; i++) {
       await this.repo.deleteOne(idArray[i])
         .catch(() => new DeleteErr('Mongo read ERROR.'));
     }
