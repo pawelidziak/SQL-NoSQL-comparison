@@ -6,10 +6,11 @@ import {DatabaseModel} from '../DatabaseModel';
 
 import {POSTGRE_CONFIG} from './Postgre.config';
 import {PostgreQueries} from './PostgreQueries';
+import {Pool} from 'pg';
 
 export class PostgreDatabase implements DatabaseModel {
   private static instance: PostgreDatabase;
-  private _con: IDatabase<any>;
+  private _con: Pool;
   private pgp: IMain = pgPromise();
 
   private config = {
@@ -21,10 +22,10 @@ export class PostgreDatabase implements DatabaseModel {
   };
 
   private constructor() {
-    this._con = this.pgp(this.config);
+    this._con = new Pool(this.config);
     this.connect()
-        .then(() => console.log('PostgreSQL CONNECTED.'))
-        .catch(err => console.error(err));
+      .then(() => console.log('PostgreSQL CONNECTED.'))
+      .catch(err => console.error(err));
   }
 
   static getInstance(): PostgreDatabase {
@@ -39,7 +40,7 @@ export class PostgreDatabase implements DatabaseModel {
    */
   async connect(): Promise<void> {
     try {
-      await this._con.connect();
+      // await this._con.connect();
       await this.initDb();
     } catch (e) {
       console.error(e);

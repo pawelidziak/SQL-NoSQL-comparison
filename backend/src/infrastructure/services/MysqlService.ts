@@ -26,7 +26,7 @@ export class MysqlService {
       .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
 
     const time = new Benchmark();
-    await this.repo.createManyParents(allInstances.slice(req.dbSize))
+    await this.repo.createManyParents(allInstances.slice(req.dbSize, req.dbSize + req.quantity))
       .catch(() => new CreateErr('MySQL CREATE in createMany() failed.'));
 
     return (time.elapsed());
@@ -52,9 +52,9 @@ export class MysqlService {
    * @param ignoreIndex
    */
   private async read(parents: ParentI[], children: any[], req: RequestModel, ignoreIndex = false) {
-    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
+    await this.repo.createManyParents(parents)
       .catch(() => new CreateErr('MySQL CREATE in read() failed.'));
-    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
+    await this.repo.createManyChildren(children)
       .catch(() => new CreateErr('MySQL CREATE in read() failed.'));
 
     const time = new Benchmark();

@@ -49,10 +49,10 @@ export class MongoDatabase implements DatabaseModel {
 
   async clearDB(): Promise<any> {
     try {
-      await this._con.db().dropDatabase();
-      await this._con.db().createCollection(MongoQueries.PARENTS_TABLE);
-      await this._con.db().createCollection(MongoQueries.CHILDREN_TABLE);
-      await this._con.db().collection(MongoQueries.CHILDREN_TABLE).createIndex({name: 1});
+      await this.exec().dropDatabase();
+      await this.exec().createCollection(MongoQueries.PARENTS_TABLE);
+      await this.exec().createCollection(MongoQueries.CHILDREN_TABLE);
+      await this.exec().collection(MongoQueries.CHILDREN_TABLE).createIndex({name: 1});
     } catch (e) {
       console.error(e);
       throw new ClearDatabaseErr(`MongoDB clear database failed.`);
@@ -60,6 +60,6 @@ export class MongoDatabase implements DatabaseModel {
   }
 
   exec(): Db {
-    return this._con.db();
+    return this._con.db('mgrMongo', {returnNonCachedInstance: true});
   }
 }

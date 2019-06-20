@@ -5,7 +5,7 @@ import {RequestModel} from '../../core/models/RequestModel';
 import {GenerateData} from '../../utils/GenerateData';
 import {DbResult} from '../dto/DbResult';
 
-import {CassandraService, MongoService, MysqlService, PostgreService} from './index';
+import {MongoService, MysqlService, PostgreService} from './index';
 import {SurveyResult} from "../dto/SurveyResult";
 
 
@@ -13,13 +13,11 @@ export class SurveyService {
   private mongoService: MongoService;
   private mysqlService: MysqlService;
   private postgreService: PostgreService;
-  private cassandraService: CassandraService;
 
   constructor() {
     this.mongoService = new MongoService();
     this.mysqlService = new MysqlService();
     this.postgreService = new PostgreService();
-    this.cassandraService = new CassandraService();
 
   }
 
@@ -48,14 +46,6 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mysqlService.createMany(allInstances, reqModel))
     });
-
-    // Cassandra
-    // result.push({
-    //   dbName: DbName.Cassandra,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps,
-    //     () => this.cassandraService.createMany(allInstances, reqModel.dbSize))
-    // });
 
     return {
       dbSize: reqModel.dbSize,
@@ -90,13 +80,6 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mysqlService.readNoIndexes(parentInstances, childInstances, reqModel))
     });
-    // Cassandra
-    // result.push({
-    //   dbName: DbName.Cassandra,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps,
-    //     () => this.cassandraService.readNoIndx(parentInstances, reqModel.dbSize))
-    // });
 
     return {
       dbSize: reqModel.dbSize,
@@ -131,13 +114,6 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mysqlService.readWithIndexes(parentInstances, childInstances, reqModel))
     });
-    // Cassandra
-    // result.push({
-    //   dbName: DbName.Cassandra,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps,
-    //     () => this.cassandraService.readNoIndx(parentInstances, reqModel.dbSize))
-    // });
 
     return {
       dbSize: reqModel.dbSize,
@@ -172,13 +148,6 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mysqlService.updateMany(allInstances, reqModel))
     });
-    // Cassandra
-    // result.push({
-    //   dbName: DbName.Cassandra,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps,
-    //     () => this.cassandraService.updateMany(allInstances, reqModel.dbSize))
-    // });
 
     return {
       dbSize: reqModel.dbSize,
@@ -213,15 +182,6 @@ export class SurveyService {
       time: await this.calculateAverageTime(
         reqModel.testsReps, () => this.mysqlService.deleteMany(allInstances, reqModel))
     });
-
-
-    // Cassandra
-    // result.push({
-    //   dbName: DbName.Cassandra,
-    //   time: await this.calculateAverageTime(
-    //     reqModel.testsReps,
-    //     () => this.cassandraService.deleteMany(allInstances, reqModel.dbSize))
-    // });
 
     return {
       dbSize: reqModel.dbSize,

@@ -1,5 +1,5 @@
 import * as mysql from 'mysql';
-import {Connection} from 'mysql';
+import {Connection, Pool} from 'mysql';
 import {ConnectionConfig} from 'mysql';
 
 import {ClearDatabaseErr, DatabaseConnectionErr} from '../../infrastructure/errors';
@@ -18,21 +18,22 @@ import {MysqlQueries} from './MysqlQueries';
  */
 export class MysqlDatabase implements DatabaseModel {
   private static instance: MysqlDatabase;
-  private readonly _con: Connection;
+  private readonly _con: Pool;
 
   private config: ConnectionConfig = {
     host: MYSQL_CONFIG.host,
     user: MYSQL_CONFIG.user,
     port: MYSQL_CONFIG.port,
     password: MYSQL_CONFIG.password,
+    database: 'mgrMysql',
     multipleStatements: true
   };
 
   private constructor() {
-    this._con = mysql.createConnection(this.config);
+    this._con = mysql.createPool(this.config);
     this.connect()
-        .then(() => console.log(`MySQL CONNECTED.`))
-        .catch(err => console.error(err));
+      .then(() => console.log(`MySQL CONNECTED.`))
+      .catch(err => console.error(err));
   }
 
   static getInstance(): MysqlDatabase {
@@ -47,7 +48,7 @@ export class MysqlDatabase implements DatabaseModel {
    */
   async connect(): Promise<void> {
     try {
-      await this._con.connect();
+      // await this._con.connect();
       await this.initDb();
     } catch (e) {
       console.error(e);
@@ -83,9 +84,21 @@ export class MysqlDatabase implements DatabaseModel {
 
   async exec(sql: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._con.query(sql, (err: any, res: any) => {
-        if (err) reject(err);
-        resolve(res);
+      // this._con.query(sql, (err: any, res: any) => {
+      //   if (err) reject(err);
+      //   resolve(res);
+      // });
+      this._con.getConnection((err, connection) => {
+        if (err) {
+          console.error(err);
+          connection.release();
+        } else {
+          connection.query(sql, (err: any, res: any) => {
+            if (err) reject(err);
+            resolve(res);
+            connection.release();
+          });
+        }
       });
     });
   }

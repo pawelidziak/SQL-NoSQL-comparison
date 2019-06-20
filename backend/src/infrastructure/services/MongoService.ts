@@ -26,7 +26,7 @@ export class MongoService {
       .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
 
     const time = new Benchmark();
-    await this.repo.createManyParents(allInstances.slice(req.dbSize))
+    await this.repo.createManyParents(allInstances.slice(req.dbSize, req.dbSize + req.quantity))
       .catch(() => new CreateErr('MongoDB CREATE in createMany() failed.'));
 
     return (time.elapsed());
@@ -52,9 +52,9 @@ export class MongoService {
    * @param req
    */
   private async read(parents: ParentI[], children: any[], req: RequestModel) {
-    await this.repo.createManyParents(parents.slice(0, req.dbSize / 2))
+    await this.repo.createManyParents(parents)
       .catch(() => new CreateErr('MongoDB CREATE in read() failed.'));
-    await this.repo.createManyChildren(children.slice(0, req.dbSize / 2))
+    await this.repo.createManyChildren(children)
       .catch(() => new CreateErr('MongoDB CREATE in read() failed.'));
 
     const time = new Benchmark();
@@ -119,7 +119,7 @@ export class MongoService {
     const time = new Benchmark();
     for (let i = 0; i < req.quantity; i++) {
       await this.repo.deleteOneParent(idArray[i])
-        .catch(() => new DeleteErr('Mongo read ERROR.'));
+        .catch(() => new DeleteErr('MongoDB DELETE in deleteMany() failed.'));
     }
 
     return (time.elapsed());

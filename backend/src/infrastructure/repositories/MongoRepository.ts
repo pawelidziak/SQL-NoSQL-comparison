@@ -11,7 +11,11 @@ export class MongoRepository {
   }
 
   async dropIndexes() {
-    await this.mongoDatabase.exec().collection('children').dropIndex('name_1');
+    try {
+      await this.mongoDatabase.exec().collection('children').dropIndex('name_1');
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   /**
