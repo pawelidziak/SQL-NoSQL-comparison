@@ -3,22 +3,21 @@
   <p>{{masterAuthor}}</p>
   <a class="mail"
      href="mailto:pa.idziak@gmail.com?subject=SQL vs NoSQL - question">pa.idziak@gmail.com</a>
-
 </header>
 
-<nav mat-tab-nav-bar
-     class="my-nav"
-     mat-align-tabs="center"
-     backgroundColor="primary"
-     color="accent">
-  <a mat-tab-link
-     *ngFor="let link of navLinks"
-     [routerLink]="link.path"
-     routerLinkActive #rla="routerLinkActive"
-     [active]="rla.isActive">
-    {{link.label}}
-  </a>
-</nav>
+<!--<nav mat-tab-nav-bar-->
+     <!--class="my-nav"-->
+     <!--mat-align-tabs="center"-->
+     <!--backgroundColor="primary"-->
+     <!--color="accent">-->
+  <!--<a mat-tab-link-->
+     <!--*ngFor="let link of navLinks"-->
+     <!--[routerLink]="link.path"-->
+     <!--routerLinkActive #rla="routerLinkActive"-->
+     <!--[active]="rla.isActive">-->
+    <!--{{link.label}}-->
+  <!--</a>-->
+<!--</nav>-->
 
 <div class="container">
   <router-outlet></router-outlet>

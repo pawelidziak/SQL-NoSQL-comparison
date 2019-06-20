@@ -6,14 +6,6 @@ const routes: Routes = [
     path: 'survey',
     loadChildren: './modules/survey/survey.module#SurveyModule'
   },
-  {
-    path: 'info',
-    loadChildren: './modules/info/info.module#InfoModule'
-  },
-  {
-    path: 'analysis',
-    loadChildren: './modules/analysis/analysis.module#AnalysisModule'
-  },
   {path: '**', redirectTo: 'survey', pathMatch: 'full'}
 ];
 
